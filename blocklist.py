@@ -28,7 +28,7 @@ try:
             'source': ''
         })
 except FileNotFoundError as e:
-    print("You do not currently have the blacklist ISDi uses.\n Please contact the repository authors (https://github.com/stopipv/isdi) with a legitimate request for it.")
+    print(f"I can't find the blocklist file: {config.APP_FLAGS_FILE!r}.")
     exit(0)
 #{APP_FLAGS = APP_FLAGS[APP_FLAGS.flag.isin({'dual-use', 'high co-occurrence odds', 'spyware'})]
 APP_FLAGS = APP_FLAGS[APP_FLAGS.flag.isin({
@@ -47,7 +47,7 @@ def dedup_app_flags(df):
     }).reset_index()
 
 
-def _regex_blacklist(app):
+def _regex_blocklist(app):
     # print("_regex_balcklist: {}".format(app))
     # return ['regex-spy'] if (SPY_REGEX['pos'].search(app) and not SPY_REGEX['neg'].search(app)) \
     #     else []
@@ -128,8 +128,8 @@ def app_title_and_flag(apps, offstore_apps=[], system_apps=[]):
     _td.loc[system_apps, 'flags'].apply(lambda x: x.append('system-app'))
 
     # print(apps, flagged_apps)
-    spy_regex_app = (_td.index.map(_regex_blacklist).values |
-                     _td.title.fillna('').apply(_regex_blacklist).values)
+    spy_regex_app = (_td.index.map(_regex_blocklist).values |
+                     _td.title.fillna('').apply(_regex_blocklist).values)
     _td.loc[spy_regex_app, 'flags'].apply(lambda x: x.extend(['regex-spy']))
 
     # Seperate kevin's list from app-flags, here is a dirty hack
@@ -147,7 +147,7 @@ def app_title_and_flag(apps, offstore_apps=[], system_apps=[]):
 #     _td = APP_FLAGS.loc[set(apps) & set(APP_FLAGS.index)]
 #     flagged_apps = (_td['store'].apply(store_str) + '-' + _td['flag']).fillna('').apply(lambda x: [x] if x else [])
 #     # print(apps, flagged_apps)
-#     a = flagged_apps + flagged_apps.index.map(_regex_blacklist)
+#     a = flagged_apps + flagged_apps.index.map(_regex_blocklist)
 #     return a
 
 

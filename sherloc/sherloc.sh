@@ -50,6 +50,12 @@ if [ ! -d "../logs" ]; then
     mkdir ../logs
 fi
 
+# Create data folder if needed
+if [ ! -d "./data" ]; then
+    echo "📁 Creating data folder..."
+    mkdir ./data
+fi
+
 if $USE_SUDO; then
     echo "🚀 Launching Sherloc with sudo..."
     sudo python3 main.py

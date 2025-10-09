@@ -12,6 +12,16 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
+## [tbd] - tbd
+
+### Added     
+### Changed
+### Deprecated
+### Removed
+### Fixed
+- Patched issue with missing data folder by adding it during setup if needed
+### Security
+
 ## [v1.1.3] - August 22, 2025
 
 ### Added     

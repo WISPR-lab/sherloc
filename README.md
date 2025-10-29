@@ -24,12 +24,18 @@ xcode-select --install
 # Installs Brew (a software package manager)
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-# Installs Python
-brew install python
+# Installs Python3.10
+brew install python@3.10
 ```
 
 ### wkhtmltopdf requirement
 This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
+
+If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
+
+To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing
+
+Click open anyway and continue installation
 
 ### Operating system dependencies
 

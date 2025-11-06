@@ -15,6 +15,7 @@ Security in case of vulnerabilities.
 ## [v1.1.4] - November 4, 2025
 
 ### Added     
+- "Open all dropdowns" buttons on TAQ and account check page
 ### Changed
 - Only show relevant screenshot buttons on account check page
 - Changed readme to account for Mac installation

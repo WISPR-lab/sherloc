@@ -30,17 +30,9 @@
                 {{ form.hidden_tag() }}
                 {{ wtf.form_errors(form) }}
 
-                <div>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>{{form.marked_done.label}}</th>
-                                <td>{{form.marked_done}} </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <a onclick="document.querySelectorAll('details').forEach(d => d.open = true);" class="btn btn-light">Open all dropdowns</a>
 
+                <br/>
                 <br/>
 
                 <details open>
@@ -178,15 +170,28 @@
                 </details>
 
 
-                <br>
-                <br>
-                <br>
                     
+                <div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>{{form.marked_done.label}}</th>
+                                <td>{{form.marked_done}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br>
+                <br>
+                <br>
+
                 <div><span class="secondarybutton">
                     <a href="{{ url_for('evidence_home') }}" class="btn btn-default">Go back</a>
                 </span></div>
                 <div><span class="primarybutton">{{form.submit}}</span></div>
                 </form>
+                <br/>
         </div>
     </div>
 </div>

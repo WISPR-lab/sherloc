@@ -18,6 +18,7 @@ Security in case of vulnerabilities.
 ### Changed
 - Only show relevant screenshot buttons on account check page
 - Changed readme to account for Mac installation
+- Changed names of consultation action buttons on homepage
 ### Deprecated
 ### Removed
 ### Fixed

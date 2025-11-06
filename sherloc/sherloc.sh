@@ -56,6 +56,12 @@ if [ ! -d "./data" ]; then
     mkdir ./data
 fi
 
+# Create screenshots folder if needed
+if [ ! -d "./webstatic/images/screenshots" ]; then
+    echo "📁 Creating screenshots folder..."
+    mkdir ./webstatic/images/screenshots
+fi
+
 if $USE_SUDO; then
     echo "🚀 Launching Sherloc with sudo..."
     sudo python3 main.py

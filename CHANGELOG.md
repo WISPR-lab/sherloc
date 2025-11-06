@@ -19,6 +19,7 @@ Security in case of vulnerabilities.
 ### Changed
 - Only show relevant screenshot buttons on account check page
 - Changed readme to account for Mac installation
+- Account nickname changed to required username
 - Changed names of consultation action buttons on homepage
 ### Deprecated
 ### Removed

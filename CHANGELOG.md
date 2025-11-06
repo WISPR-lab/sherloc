@@ -12,14 +12,16 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
-## [tbd] - tbd
+## [v1.1.4] - November 4, 2025
 
 ### Added     
 ### Changed
+- Only show relevant screenshot buttons on account check page
+- Changed readme to account for Mac installation
 ### Deprecated
 ### Removed
 ### Fixed
-- Patched issue with missing data folder by adding it during setup if needed
+- Patched issue with missing data and screenshot folders by adding during setup if needed
 ### Security
 
 ## [v1.1.3] - August 22, 2025

@@ -55,8 +55,8 @@
                                     {{ render_text_field(form.suspicious_logins.describe_activity, ishidden=True) }}
                                     <tr>
                                         <td colspan="2" class="buttons-in-details">
-                                            <button id="account{{sessiondata.account_id}}_suspicious_logins" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Android Screenshot</button>
-                                            <button id="account{{sessiondata.account_id}}_suspicious_logins" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">iOS Screenshot</button>
+                                            {% if android_ser %}<button id="account{{sessiondata.account_id}}_suspicious_logins" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
+                                            {% if ios_ser %}<button id="account{{sessiondata.account_id}}_suspicious_logins" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
                                         </td>
                                     </tr>
                                     <tr><div id="loading" style="display:none;"><img src="../../../webstatic/images/waiting.gif" alt="" /></div></tr>
@@ -141,8 +141,8 @@
                                     <tbody>
                                     <tr>
                                         <td colspan="2" class="buttons-in-details">
-                                        <button id="account{{sessiondata.account_id}}_recovery_settings" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Android Screenshot</button>
-                                        <button id="account{{sessiondata.account_id}}_recovery_settings" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">iOS Screenshot</button>
+                                            {% if android_ser %}<button id="account{{sessiondata.account_id}}_recovery_settings" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
+                                            {% if ios_ser %}<button id="account{{sessiondata.account_id}}_recovery_settings" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
                                         </td>
                                     </tr>
                                     </tbody>
@@ -180,8 +180,8 @@
                                     <tbody>
                                     <tr>
                                         <td colspan="2" class="buttons-in-details">
-                                        <button id="account{{sessiondata.account_id}}_two_factor_settings" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Android Screenshot</button>
-                                        <button id="account{{sessiondata.account_id}}_two_factor_settings" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">iOS Screenshot</button>
+                                            {% if android_ser %} <button id="account{{sessiondata.account_id}}_two_factor_settings" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
+                                            {% if ios_ser %}<button id="account{{sessiondata.account_id}}_two_factor_settings" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
                                         </td>
                                     </tr>
                                     </tbody>
@@ -218,8 +218,8 @@
                                     <tbody>
                                     <tr>
                                         <td colspan="2" class="buttons-in-details">
-                                        <button id="account{{sessiondata.account_id}}_security_questions" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Android Screenshot</button>
-                                        <button id="account{{sessiondata.account_id}}_security_questions" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">iOS Screenshot</button>
+                                            {% if android_ser %}<button id="account{{sessiondata.account_id}}_security_questions" type="button" onclick="getScreenshot(this.id, 'android', '{{android_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
+                                            {% if ios_ser %}<button id="account{{sessiondata.account_id}}_security_questions" type="button" onclick="getScreenshot(this.id, 'ios', '{{ios_ser}}')" value="screenshot" class="btn btn-secondary">Take Screenshot</button>{% endif %}
                                         </td>
                                     </tr>
                                      </tbody>

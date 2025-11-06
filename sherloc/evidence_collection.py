@@ -795,7 +795,7 @@ class AccountInvestigation(Dictable):
     def __init__(self,
                  account_id=0,
                  platform="",
-                 account_nickname="",
+                 username="",
                  suspicious_logins=dict(),
                  password_check=dict(),
                  recovery_settings=dict(),
@@ -805,9 +805,7 @@ class AccountInvestigation(Dictable):
                  **kwargs):
         self.account_id = account_id
         self.platform = platform
-        self.account_nickname = account_nickname
-        if self.account_nickname.strip() == "":
-            self.account_nickname = platform
+        self.username = username
 
         # insert account id where needed to get screenshots
         for dict in [suspicious_logins, recovery_settings, two_factor_settings, security_questions]:
@@ -996,7 +994,7 @@ class ScreenshotInfo(Dictable):
                  device_serial=None,
                  app_id=None,
                  app_name=None,
-                 account_nickname=None,
+                 username=None,
                  account_section=None,
                  get_metadata=True):
         self.fname = fname
@@ -1011,7 +1009,7 @@ class ScreenshotInfo(Dictable):
         self.app_name = app_name
 
         # Just for account screenshots
-        self.account_nickname = account_nickname
+        self.username = username
         self.account_section = account_section
 
         self.metadata = dict()
@@ -1199,7 +1197,7 @@ class SecurityQForm(FlaskForm):
     which = TextAreaField(SecurityQuestions().questions["which"])
 
 class AccountInfoForm(FlaskForm):
-    account_nickname = TextAreaField("Account Nickname")
+    username = TextAreaField("Username")
     account_platform = TextAreaField("Platform")
     suspicious_logins = FormField(SuspiciousLoginsForm)
     password_check = FormField(PasswordForm)
@@ -1269,7 +1267,7 @@ class AppInvestigationForm(FlaskForm):
 class AccountCompromiseForm(FlaskForm):
     title = "Account Compromise Check"
     platform = StringField('Platform', validators=[InputRequired()])
-    account_nickname = StringField('Account Nickname')
+    username = StringField('Username', validators=[InputRequired()])
     suspicious_logins = FormField(SuspiciousLoginsForm)
     password_check = FormField(PasswordForm)
     recovery_settings = FormField(RecoveryForm)

@@ -123,7 +123,7 @@
                     {% for account in accounts%}
                     <tr>
                         <th>
-                            {{account.platform}}{% if account.platform != account.account_nickname %} (Nickname: {{account.account_nickname}}){% endif %}
+                            {{account.platform}}: {{account.username}}
                         </th>
                         <td>
                             {% if account.risk_report.risk_present %}
@@ -786,7 +786,7 @@
         <p>Summary of accounts investigated:</p>
         <ol>
             {% for account in accounts %}
-            <li>{{account.platform}}{% if account.platform != account.account_nickname %} (Nickname: {{account.account_nickname}}){% endif %}</li>
+            <li>{{account.platform}}: {{account.username}}</li>
             {% endfor %}
         </ol>
         {% else %}
@@ -796,7 +796,7 @@
 
     {% for account in accounts %}
     <div class="account-check">
-    <h2  class="separator">Account Check {{loop.index}}  of {{accounts|length}}: {{account.platform}}{% if account.platform != account.account_nickname %} (Nickname: {{account.account_nickname}}){% endif %}</h2>
+    <h2  class="separator">Account Check {{loop.index}}  of {{accounts|length}}: {{account.platform}}: {{account.username}}</h2>
 
     <table class="printout_columns">
         <tbody>

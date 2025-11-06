@@ -168,18 +168,19 @@
                     <div class="content">
                     <table class="summarytable">
                         <tbody>
-                        <tr><th>Nickname</th>
+                        <tr>
                             <th>Platform</th>
+                            <th>Username</th>
                             <th>Risks</th>
                         </tr>
 
                         {% for account in consultdata.accounts %}
                         <tr>
                             <td>
-                                <p>{{account.account_nickname}}</p>
+                                <p>{{account.platform}}</p>
                             </td>
                             <td>
-                                <p>{{account.platform}}</p>
+                                <p>{{account.username}}</p>
                             </td>
                             <td>
                             {% if account.risk_report.risk_present %}

@@ -543,7 +543,7 @@ class TAQDevices(DictInitClass):
 
 class TAQAccounts(DictInitClass):
     questions = {'pwd_mgmt': "How do you remember your passwords?",
-                 'pwd_mgmt-describe': "Please provide more details on how you remember your passwords.",
+                 'pwd_mgmt_describe': "Please provide more details on how you remember your passwords.",
                  'pwd_comp': "Do you believe the person of concern knows, or could guess, any of your passwords?",
                  'pwd_comp_which': "Which passwords do you believe are compromised, and why?"}
     attrs = list(questions.keys())
@@ -1341,7 +1341,7 @@ class TAQDeviceCompForm(FlaskForm):
 class TAQAccountsForm(FlaskForm):
     title = "Account and Password Management"
     pwd_mgmt = SelectMultipleField(TAQAccounts().questions['pwd_mgmt'], choices=PWD_CHOICES)
-    pwd_mgmt_describe = TextAreaField(TAQAccounts().questions['pwd_mgmt-describe'])
+    pwd_mgmt_describe = TextAreaField(TAQAccounts().questions['pwd_mgmt_describe'])
     pwd_comp = RadioField(
         TAQAccounts().questions['pwd_comp'], choices=YES_NO_UNSURE_CHOICES, default=YES_NO_DEFAULT)
     pwd_comp_which = TextAreaField(TAQAccounts().questions['pwd_comp_which'])

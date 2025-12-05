@@ -139,10 +139,7 @@ def evidence_taq():
         if form.is_submitted() and form.validate():
 
             # load data as class
-            pprint(form.data)
             taq_data = TAQData(**form.data)
-            pprint(taq_data.to_dict())
-            
 
             # save clean data
             save_data_as_json(taq_data, ConsultDataTypes.TAQ.value)

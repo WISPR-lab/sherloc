@@ -86,8 +86,17 @@ Sherloc should open `http://localhost:6200` in the browser.
 
 iOS devices have two requirements if you want to take screenshots. 
 
-1. Developer mode must be on. Please see this article for how to turn on developer mode using XCode: https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device.
+1. Developer mode must be on (instructions below). 
 2. Sherloc must be run in `sudo`, which is the default when using `./sherloc.sh`.
+
+To turn on developer mode:
+1. Plug in the client’s phone.
+2. Open XCode and start the OpenHaystack project.
+3. Go to Product -> Destination -> Manage Run Destinations
+4. Choose the client’s phone as the run location and hit Run. If it says Developer Mode must be opted into, hit cancel. Then enable Developer Mode on the phone in Settings > Privacy & Security > Developer Mode.
+5. Restart the phone.
+
+Please see this article for more details on how to turn on developer mode using XCode: https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device.
 
 ## Debugging tips 
 If you encounter errors, please file a [GitHub issue](../../issues/) with the server error output. 

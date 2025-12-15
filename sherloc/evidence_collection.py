@@ -40,6 +40,96 @@ from wtforms import (
     TextAreaField,
 )
 from wtforms.validators import InputRequired
+import re
+import unicodedata
+
+import re
+import unicodedata
+
+import re
+import unicodedata
+
+def sanitize_text(text: str) -> str:
+    """
+    OCR-MAX Sanitizer:
+    - Fixes all mojibake (â€™ Â® â€¢ etc.)
+    - Normalizes Unicode (NFKD)
+    - Converts smart punctuation → ASCII
+    - Adds missing spacing:
+        • camelCase → camel Case
+        • sentence.Jump → sentence. Jump
+    - Converts long dashes to ' - '
+    - Removes all remaining non-ASCII
+    - Collapses whitespace
+    - Skips image paths and URLs to images
+    """
+
+    if not isinstance(text, str):
+        return text
+
+    raw = text.strip()
+    low = raw.lower()
+
+    # --- 0. Skip image file paths entirely ---
+    if low.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+        return raw
+    if re.match(r'^https?://\S+\.(png|jpg|jpeg|gif|webp)$', low):
+        return raw
+
+    # --- 1. Normalize Unicode ---
+    text = unicodedata.normalize("NFKD", raw)
+
+    # --- 2. Mojibake repair ---
+    mojibake = {
+        "â€™": "'", "â€˜": "'", "â€œ": '"', "â€�": '"',
+        "â€“": "-", "â€”": "-", "â€¢": "-",
+        "Â®": "", "Â©": "", "â„¢": "",
+        "Â": "",
+    }
+    for bad, good in mojibake.items():
+        text = text.replace(bad, good)
+
+    # --- 3. Smart punctuation → ASCII ---
+    smart = {
+        "’": "'", "‘": "'", "′": "'",
+        "“": '"', "”": '"',
+        "–": "-", "—": "-",
+        "•": "-", "·": "-", "●": "-",
+        "…": "...",
+        "™": "", "®": "", "©": "",
+    }
+    for bad, good in smart.items():
+        text = text.replace(bad, good)
+
+    # --- 4. Add missing spacing (OCR-helpful) ---
+    # camelCase → camel Case
+    text = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
+
+    # "device.FAST" → "device. FAST"
+    text = re.sub(r'\.(?=[A-Z])', '. ', text)
+
+    # --- 5. Normalize long dashes to safe OCR form ---
+    text = re.sub(r'\s*[-–—]+\s*', ' - ', text)
+
+    # --- 6. Remove all remaining non-ASCII ---
+    text = text.encode("ascii", errors="ignore").decode("ascii")
+
+    # --- 7. Collapse excessive whitespace ---
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    return text
+
+
+def sanitize_context(obj):
+    """Recursively sanitize dicts/lists/strings."""
+    if isinstance(obj, dict):
+        return {k: sanitize_context(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_context(v) for v in obj]
+    elif isinstance(obj, str):
+        return sanitize_text(obj)
+    return obj
+
 
 TMP_CONSULT_DATA_DIR = "tmp-consult-data"
 
@@ -1403,6 +1493,10 @@ class HomepageNoteForm(FlaskForm):
     generate_printout = SubmitField("Generate Evidentiary Document")
 
 def create_printout(context):
+    
+    # Apply sanitizer to ALL text fields
+    context = sanitize_context(context)
+    
     out_file = os.path.join('reports', 'test_report.pdf')
     template = os.path.join('templates', 'printout.html')
     css_path = os.path.join('webstatic', 'style.css')
@@ -1410,20 +1504,25 @@ def create_printout(context):
     template_loader = jinja2.FileSystemLoader("./")
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template(template)
-    html_string = template.render(context)
 
+    
+    html_string = template.render(context)
+    with open('a.html', 'w') as f:
+        f.write(html_string)
+    
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
     options = {
         'enable-local-file-access': True,
-        'margin-top': '15mm',
-        'margin-bottom': '20mm',
+        'margin-top': '52mm',
+        'margin-bottom': '52mm',
         'margin-left': '10mm',
         'margin-right': '10mm',
-        'footer-spacing': '5',
-        'footer-center': 'Created by Madison Tech Clinic using Sherloc {} • Page [page] of [toPage]'.format(SHERLOC_VERSION),
-        'footer-font-name': 'Georgia',
-        'footer-font-size': '8',
+        'header-spacing': '0',
+        'footer-spacing': '0',
+        'footer-center': 'Page [page] of [toPage]',
+        'footer-font-name': 'Helvetica Neue',
+        'footer-font-size': '12',
     }
 
     pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)

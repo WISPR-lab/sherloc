@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* margins for printing */
-        body  { padding: 5mm; font-size: 12pt; }
+        body  { padding: 5mm; font-size: 12pt; font-weight: 400px;}
         .new-page { padding-top: 5mm; }
-
-        h2 {font-size: 16pt; }
-        h3 {font-size: 13pt; }
-        h4 {font-style: italic; font-weight: 600px;}
+        h1 {font-size: 15pt;}
+        h2 {font-size: 14pt;}
+        h2 {font-size: 13pt;}
+        h3 {font-size: 12pt;}
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: normal;
+        }
 
         .app-padding-top {padding-top: 12mm;}
 
-        body { font-family: 'Georgia', serif; }
+        body {
+    font-family: 'Roboto Mono', monospace; /* Changed the font-family */
+}
+
+        
     </style>
 </head>
 
@@ -28,8 +36,8 @@
 
             <div class="cover-meta">
 
-            <p><b>Client Name:</b> {{setup.client}}</p>
-            <p><b>Consultation Start Time:</b> {{setup.date}}</p>
+            <p>Client Name: {{setup.client}}</p>
+            <p>Consultation Start Time: {{setup.date}}</p>
 
             <hr/>
             <br/>
@@ -55,14 +63,14 @@
     <hr/>
     <div class="printout-summary">
         <div class="overallsummary">
-            <p><i>The following are automated summaries generated deterministically from the content of this report.</i></p>
+            <p>The following are automated summaries generated deterministically from the content of this report.</p>
 
             <h3 class="">Technology Assessment Questionnaire</h3> 
                         {% if taq["all_risks"]|length > 0 %}
                         <div>The following risks were identified based on the client's responses to the Technology Assessment Questionnaire:
                             <ul>
                                     {% for risk in taq["all_risks"] %}
-                                    <li><span class="inlinerisk"><span>&#9888;&#65039;</span> <b>{{risk.risk}}</b></span>: {{risk.description}}</li>
+                                    <li><span class="inlinerisk"><span></span> {{risk.risk}}</span>: {{risk.description}}</li>
                                     {% endfor %}
                             </ul>
                         </div>
@@ -92,7 +100,7 @@
                             {% if scan.risk_report.risk_present %}
                                 <ul>
                                     {% for risk in scan.risk_report.risk_details %}
-                                    <li><span class="inlinerisk"><span>&#9888;&#65039;</span> <b>{{risk.risk}}</b></span>: {{risk.description}}</li>
+                                    <li><span class="inlinerisk"><span></span> {{risk.risk}}</span>: {{risk.description}}</li>
                                     {% endfor %}
                                 </ul>
                             {% else %}
@@ -123,13 +131,13 @@
                     {% for account in accounts%}
                     <tr>
                         <th>
-                            {{account.platform}}: {{account.username}}
+                            {{account.platform}}:<br>{{account.username}}
                         </th>
                         <td>
                             {% if account.risk_report.risk_present %}
                                 <ul>
                                     {% for risk in account.risk_report.risk_details %}
-                                    <li><span class="inlinerisk"><span>&#9888;&#65039;</span> <b>{{risk.risk}}</b></span>: {{risk.description}}</li>
+                                    <li><span class="inlinerisk"><span></span> {{risk.risk}}</span>: {{risk.description}}</li>
                                     {% endfor %}
                                 </ul>
                             {% else %}
@@ -148,16 +156,16 @@
 
         <br/>
 
-        <h3 class="">Comments on the Consultation <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+        <h3 class="">Comments on the Consultation <span class="tag"> Human entered</span></h3>
          <div class="form-responses">
             <table>
                 <tbody>
                     <tr>
-                        <th><i>Consultant Comments</i></th>
+                        <th>Consultant Comments</th>
                         <td>{{notes.consultant_notes}}</td>
                     </tr>
                     <tr>
-                        <th><i>Client Comments</i></th>
+                        <th>Client Comments</th>
                         <td>{{notes.client_notes}}</td>
                     </tr>
                 </tbody>
@@ -177,7 +185,7 @@
         <tbody>
             <tr valign="top">
                 <th>    
-                    <h3>Risk of Device Compromise <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Risk of Device Compromise <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -204,8 +212,8 @@
                 <td>
                     {% for risk in taq["devices"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                       <span>&#9888;&#65039;</span> 
-                       <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}
+                       <span> </span> 
+                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}
                        </span>
                     </div>
                     {% endfor %}
@@ -219,7 +227,7 @@
         <tbody>
             <tr valign="top">
                 <th>
-                    <h3>Risk of Account Compromise <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Risk of Account Compromise <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -268,14 +276,14 @@
                 <td>
                     {% for risk in taq["accounts"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                       <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                     {% for risk in taq["sharing"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                       <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
@@ -288,7 +296,7 @@
         <tbody>
             <tr valign="top">
                 <th>
-                    <h3>Risks from Smart Home Devices <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Risks from Smart Home Devices <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -321,8 +329,8 @@
                 <td>
                     {% for risk in taq["smarthome"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                       <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
@@ -334,7 +342,7 @@
         <tbody>
             <tr valign="top">
                 <th>
-                    <h3>Risks from Children's Devices <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Risks from Children's Devices <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -361,9 +369,9 @@
                 <td>
                     {% for risk in taq["kids"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
+                        <span> </span> 
                        <span>
-                            <b>{{risk["risk"]}}</b>: {{risk["description"]}}
+                            {{risk["risk"]}}:<br>{{risk["description"]}}
                         </span>
                     </div>
                     {% endfor %}
@@ -385,7 +393,7 @@
 {% for scan in scans %}
 <div class="pagebreak"></div>
 <div class="new-page">
-    <h1>Device Scan {{loop.index}} of {{scans|length}}: {{scan.device_nickname}} </h1>
+    <h1>Device Scan {{loop.index}} of {{scans|length}}:<br>{{scan.device_nickname}} </h1>
     <hr />
     {% if scan.manual %}
     <p>*Note: This scan was done manually. Automated scan was not possible, so suspicious apps were identified by the consultant and added by hand.*</p>
@@ -396,7 +404,7 @@
         <tbody>
             <tr>
                 <th>
-                <h3>Device Details {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{% else %}<span class="tag">&#9999;&#65039; Human-entered</span>{%endif%}</h3>
+                <h3>Device Details {% if not scan.manual %}<span class="tag"> System captured </span>{% else %}<span class="tag"> Human entered</span>{%endif%}</h3>
                 <table class="appinfo data-table app-info-table">
                     <tbody>
                         <tr>
@@ -418,7 +426,7 @@
                             </th>
                             <td>
                                 {% if not scan.serial_or_udid %}
-                                <i>Not entered.</i>
+                                Not entered.
                                 {% else %}
                                 <p class="serial-or-udid">{{scan.serial_or_udid}}</p>
                                 {% endif %}
@@ -431,7 +439,7 @@
             {% if scan.device_type != "ios" %}
             <tr valign="top">
                 <th>
-                    <h3>Jailbreak Assessment {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{%else%}<span class="tag">&#9999;&#65039; Human-entered</span>{%endif%}</h3>
+                    <h3>Jailbreak Assessment {% if not scan.manual %}<span class="tag"> System captured </span>{%else%}<span class="tag"> Human entered</span>{%endif%}</h3>
                     <table class="appinfo data-table app-info-table">
                         <tbody>
                             <tr>
@@ -450,8 +458,8 @@
                     {% for risk in scan.risk_report.risk_details %}
                     {% if "app" not in risk.risk %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk.risk}}</b>: {{risk.description}}</span>
+                        <span> </span> 
+                        <span>{{risk.risk}}:<br>{{risk.description}}</span>
                     </div>
                     {% endif %}
                     {% endfor %}
@@ -459,7 +467,7 @@
             </tr>
             {% endif %}
             <tr> 
-                <th><h3>Screenshots {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{%endif%}</h3>
+                <th><h3>Screenshots {% if not scan.manual %}<span class="tag"> System captured </span>{%endif%}</h3>
                 {% if scan.screenshot_files|length > 0 %}
                 <div class="screenshot-container">
                     <table>
@@ -533,7 +541,7 @@
         <tbody>
             <tr>
                 <th>
-                    <h3>App Information {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{%else%}<span class="tag">&#9999;&#65039; Human-entered</span>{%endif%}</h3>
+                    <h3>App Information {% if not scan.manual %}<span class="tag"> System captured </span>{%else%}<span class="tag"> Human entered </span>{%endif%}</h3>
                     <table class="appinfo data-table app-info-table">
                         <tbody>
                             <tr>
@@ -546,7 +554,7 @@
                                 <th>App Title</th>
                                 <td>
                                     {% if app.title != app.appId %} {{app.title}}
-                                    {% else %} <i>None provided.</i>
+                                    {% else %} None provided.
                                     {% endif %}
                                 </td>
                             </tr>
@@ -556,7 +564,7 @@
                                     {% if app.install_time %}
                                     {{app.install_time}}
                                     {% else %}
-                                    <i>Unknown</i>
+                                    Unknown
                                     {% endif %}
                                 </td>
                             </tr>
@@ -566,7 +574,7 @@
                                     {% if app.description %}
                                     {{app.description}}
                                     {% else %}
-                                    <i>None provided.</i>
+                                    None provided.
                                     {% endif %}
                                 </td>
                             </tr>
@@ -596,8 +604,8 @@
                     {% for risk in app.risk_report.risk_details %}
                     {% if "spyware" in risk.risk %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk.risk}}</b>: {{risk.description}}</span>
+                        <span> </span> 
+                        <span>{{risk.risk}}:<br>{{risk.description}}</span>
                     </div>
                     {% endif %}
                     {% endfor %}
@@ -606,7 +614,7 @@
             {#
             <tr>
                 <th>
-                    <h3>Permissions Used {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{%endif%}</h3>
+                    <h3>Permissions Used {% if not scan.manual %}<span class="tag"> System captured </span>{%endif%}</h3>
                     {% if app.permission_info.permissions | length > 0 %}
                     <ul class="permissions-used">
                         {% for p in app.permission_info.permissions %}
@@ -629,7 +637,7 @@
             #}
             <tr>
                 <th>
-                    <h3>Installation Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Installation Questionnaire <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                         <table>
                         <thead>
@@ -648,7 +656,7 @@
                                         {% if 'system-app' not in app.flags %}
                                         <td>{{select_text[app.install_info.installed]}}</td>
                                         {% else %}
-                                        <td><i>System app, not applicable.</i></td>
+                                        <td>System app, not applicable.</td>
                                         {% endif %}
                                     </tr>
                                     <tr>
@@ -656,7 +664,7 @@
                                         {% if 'system-app' not in app.flags %}
                                         <td>{{select_text[app.install_info.coerced]}}</td>
                                         {% else %}
-                                        <td><i>System app, not applicable.</i></td>
+                                        <td>System app, not applicable.</td>
                                         {% endif %}
                                     </tr>
                         </tbody>
@@ -666,14 +674,14 @@
                 <td>
                     {% for risk in app.install_info.risk_report.risk_details %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk.risk}}</b>: {{risk.description}}</span>
+                        <span> </span> 
+                        <span>{{risk.risk}}:<br>{{risk.description}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
             <tr><th>
-                    <h3>Data Leakage Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Data Leakage Questionnaire <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                         <table>
                         <thead>
@@ -698,24 +706,24 @@
                 <td>
                     {% for risk in app.permission_info.risk_report.risk_details %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk.risk}}</b>: {{risk.description}}</span>
+                        <span> </span> 
+                        <span>{{risk.risk}}:<br>{{risk.description}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
             <tr>
                 <th>
-                <h3>Comments <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                <h3>Comments <span class="tag"> Human entered</span></h3>
                 <div class="form-responses">
                     <table>
                         <tbody>
                             <tr>
-                                <th><i>Consultant Comments</i></th>
+                                <th>Consultant Comments</th>
                                 <td>{{app.notes.consultant_notes}}</td>
                             </tr>
                             <tr>
-                                <th><i>Client Comments</i></th>
+                                <th>Client Comments</th>
                                 <td>{{app.notes.client_notes}}</td>
                             </tr>
                         </tbody>
@@ -725,7 +733,7 @@
             </tr>
             <tr>
                 <th>
-                <h3>Screenshots {% if not scan.manual %}<span class="tag">&#9881; System-captured</span>{%endif%}</h3>
+                <h3>Screenshots {% if not scan.manual %}<span class="tag"> System captured </span>{%endif%}</h3>
                 {% if app.screenshot_files|length > 0 %}
                 <div class="screenshot-container">
                     <table>
@@ -786,7 +794,7 @@
         <p>Summary of accounts investigated:</p>
         <ol>
             {% for account in accounts %}
-            <li>{{account.platform}}: {{account.username}}</li>
+            <li>{{account.platform}}:<br>{{account.username}}</li>
             {% endfor %}
         </ol>
         {% else %}
@@ -801,7 +809,7 @@
     <table class="printout_columns">
         <tbody>
             <tr valign="top">       
-                <th><h3>Login Activity Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                <th><h3>Login Activity Questionnaire <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                         <table>
                         <thead>
@@ -828,7 +836,7 @@
                 
                 {% if account["suspicious_logins"]["screenshot_files"]|length > 0 %}
                 <div class="screenshot-container">
-                    <h4>Screenshots <span class="tag">&#9881; System-captured</span></h4>
+                    <h4>Screenshots <span class="tag"> System captured </span></h4>
                     <table>
                         <tbody>
                             <tr>
@@ -864,15 +872,15 @@
                 <td>
                     {% for risk in account["suspicious_logins"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
 
             <tr>
-              <th><h3>Password Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+              <th><h3>Password Questionnaire <span class="tag"> Human entered</span></h3>
                 <div class="form-responses">
                     <table>
                         <thead>
@@ -899,14 +907,14 @@
                 <td>
                     {% for risk in account["password_check"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
             <tr>
-                  <th><h3>Recovery Settings Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                  <th><h3>Recovery Settings Questionnaire <span class="tag"> Human entered</span></h3>
                 <div class="form-responses">
                     <table>
                         <thead>
@@ -933,7 +941,7 @@
 
                 {% if account["recovery_settings"]["screenshot_files"]|length > 0 %}
                 <div class="screenshot-container">
-            <h4>Screenshots <span class="tag">&#9881; System-captured</span></h4>
+            <h4>Screenshots <span class="tag"> System captured </span></h4>
                     <table>
                         <tbody>
                             <tr>
@@ -957,7 +965,7 @@
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
-                                        </tr><tr> 
+                                        </tr><tr>
                                         {% endif %}
                             {% endfor %}
                             </tr>
@@ -969,14 +977,14 @@
                 <td>
                     {% for risk in account["recovery_settings"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
             <tr>
-              <th><h3>Two-Factor Authentication Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+              <th><h3>Two Factor Authentication Questionnaire <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -1009,7 +1017,7 @@
 
                 {% if account["two_factor_settings"]["screenshot_files"]|length > 0 %}
                 <div class="screenshot-container">
-            <h4>Screenshots <span class="tag">&#9881; System-captured</span></h4>
+            <h4>Screenshots <span class="tag"> System captured</span></h4>
                     <table>
                         <tbody>
                             <tr>
@@ -1045,14 +1053,14 @@
                 <td>
                     {% for risk in account["two_factor_settings"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
             </tr>
             <tr>
-              <th><h3>Security Questions Questionnaire <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+              <th><h3>Security Questions Questionnaire <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                     <table>
                         <thead>
@@ -1080,7 +1088,7 @@
             
                 {% if account["security_questions"]["screenshot_files"]|length > 0 %}
                 <div class="screenshot-container">
-            <h4>Screenshots <span class="tag">&#9881; System-captured</span></h4>
+            <h4>Screenshots <span class="tag"> System captured </span></h4>
                     <table>
                         <tbody>
                             <tr>
@@ -1116,8 +1124,8 @@
                 <td>
                     {% for risk in account["security_questions"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span>&#9888;&#65039;</span> 
-                        <span><b>{{risk["risk"]}}</b>: {{risk["description"]}}</span>
+                        <span> </span> 
+                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
                     </div>
                     {% endfor %}
                 </td>
@@ -1125,16 +1133,16 @@
 
             <tr>
                 <th>
-                    <h3>Comments <span class="tag">&#9999;&#65039; Human-entered</span></h3>
+                    <h3>Comments <span class="tag"> Human entered</span></h3>
                     <div class="form-responses">
                         <table>
                             <tbody>
                                 <tr>
-                                    <th><i>Consultant Comments</i></th>
+                                    <th>Consultant Comments</th>
                                     <td>{{account["notes"]["consultant_notes"]}}</td>
                                 </tr>
                                 <tr>
-                                    <th><i>Client Comments</i></th>
+                                    <th>Client Comments</th>
                                     <td>{{account["notes"]["client_notes"]}}</td>
                                 </tr>
                             </tbody>

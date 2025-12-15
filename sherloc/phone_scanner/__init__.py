@@ -10,6 +10,7 @@ from collections import defaultdict
 from datetime import datetime
 from pprint import pprint
 from time import sleep
+import unicodedata
 
 import config
 import pandas as pd
@@ -18,6 +19,75 @@ from . import blocklist, parse_dump
 from .android_permissions import all_permissions
 from .runcmd import catch_err, run_command
 
+def sanitize_text(text: str) -> str:
+    """
+    OCR-MAX Sanitizer:
+    - Fixes all mojibake (â€™ Â® â€¢ etc.)
+    - Normalizes Unicode (NFKD)
+    - Converts smart punctuation → ASCII
+    - Adds missing spacing:
+        • camelCase → camel Case
+        • sentence.Jump → sentence. Jump
+    - Converts long dashes to ' - '
+    - Removes all remaining non-ASCII
+    - Collapses whitespace
+    - Skips image paths and URLs to images
+    """
+
+    if not isinstance(text, str):
+        return text
+
+    raw = text.strip()
+    low = raw.lower()
+
+    # --- 0. Skip image file paths entirely ---
+    if low.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+        return raw
+    if re.match(r'^https?://\S+\.(png|jpg|jpeg|gif|webp)$', low):
+        return raw
+
+    # --- 1. Normalize Unicode ---
+    text = unicodedata.normalize("NFKD", raw)
+
+    # --- 2. Mojibake repair ---
+    mojibake = {
+        "â€™": "'", "â€˜": "'", "â€œ": '"', "â€�": '"',
+        "â€“": "-", "â€”": "-", "â€¢": "-",
+        "Â®": "", "Â©": "", "â„¢": "",
+        "Â": "",
+    }
+    for bad, good in mojibake.items():
+        text = text.replace(bad, good)
+
+    # --- 3. Smart punctuation → ASCII ---
+    smart = {
+        "’": "'", "‘": "'", "′": "'",
+        "“": '"', "”": '"',
+        "–": "-", "—": "-",
+        "•": "-", "·": "-", "●": "-",
+        "…": "...",
+        "™": "", "®": "", "©": "",
+    }
+    for bad, good in smart.items():
+        text = text.replace(bad, good)
+
+    # --- 4. Add missing spacing (OCR-helpful) ---
+    # camelCase → camel Case
+    text = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
+
+    # "device.FAST" → "device. FAST"
+    text = re.sub(r'\.(?=[A-Z])', '. ', text)
+
+    # --- 5. Normalize long dashes to safe OCR form ---
+    text = re.sub(r'\s*[-–—]+\s*', ' - ', text)
+
+    # --- 6. Remove all remaining non-ASCII ---
+    text = text.encode("ascii", errors="ignore").decode("ascii")
+
+    # --- 7. Collapse excessive whitespace ---
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    return text
 
 class AppScan(object):
     device_type = ""
@@ -106,6 +176,13 @@ class AppScan(object):
             if "descriptionHTML" not in d:
                 d["descriptionHTML"] = d["description"]
 
+            # SANITIZE DESCRIPTION (applies to BOTH iOS and Android fallback)
+            if "description" in d and isinstance(d["description"], str):
+                d["description"] = sanitize_text(d["description"])
+
+            if "descriptionHTML" in d and isinstance(d["descriptionHTML"], str):
+                d["descriptionHTML"] = sanitize_text(d["descriptionHTML"])
+
             # Parse the dump to get dump info (which includes..?)
             dfname = self.dump_path(serialno)
             if self.device_type == "ios":
@@ -114,7 +191,13 @@ class AppScan(object):
                     ddump = parse_dump.IosDump(dfname)
             else:
                 ddump = parse_dump.AndroidDump(dfname)
+            
             info = ddump.info(appid)
+            if "description" in info and isinstance(info["description"], str):
+                info["description"] = sanitize_text(info["description"])
+
+            if "descriptionHTML" in info and isinstance(info["descriptionHTML"], str):
+                info["descriptionHTML"] = sanitize_text(info["descriptionHTML"])
 
             config.logging.info("BEGIN APP INFO")
             config.logging.info("info={}".format(info))
@@ -138,6 +221,12 @@ class AppScan(object):
                 #del info["permissions"]
 
             d = d.fillna("").to_dict(orient="index").get(0, {}) # what does this do?
+            if "description" in d:
+                d["description"] = sanitize_text(str(d["description"]))
+
+            if "descriptionHTML" in d:
+                d["descriptionHTML"] = sanitize_text(str(d["descriptionHTML"]))
+
 
             if self.device_type == "ios":
                 d["permissions"] = info.get("permissions", [])
@@ -427,6 +516,12 @@ class AndroidScan(AppScan):
 
         # First, get basic app details using the Super class
         d, info = super(AndroidScan, self).app_details(serialno, appid)
+       
+        if "description" in d and isinstance(d["description"], str):
+            d["description"] = sanitize_text(d["description"])
+
+        if "descriptionHTML" in d and isinstance(d["descriptionHTML"], str):
+            d["descriptionHTML"] = sanitize_text(d["descriptionHTML"])
 
         # runtime/install/declared permissions
 

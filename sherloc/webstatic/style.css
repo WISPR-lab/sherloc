@@ -15,22 +15,20 @@ a.appid {
     color: unset;
 }
 
-
-
 /* fallback */
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  font-size: 25pt;
+  font-size: 14pt;
   src: url(http://localhost:6200/webstatic/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
 }
 
 .material-icons {
   font-family: 'Material Icons';
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
-  font-size: 24px;
+  font-size: 19px;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -129,7 +127,7 @@ details {
     color: white;
     padding: 6px 12px;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 19px;
   }
 
   .section-content {
@@ -141,7 +139,7 @@ details {
   border-top: 2px solid #666;
   padding-top: 10px;
   margin-top: 20px;
-  font-size: 1.25em;
+  font-size: 14pt;
 }
 
 .section-title {
@@ -171,7 +169,7 @@ details {
   th>label {
     padding-right: 10px;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
   }
 
   input {
@@ -183,7 +181,7 @@ details {
     text-align: left;
     background: rgb(66, 15, 103);
     color: white;
-    font-size: 10px;
+    font-size: 16px;
   }
 
 div.progress-bar {
@@ -195,7 +193,7 @@ textarea {
     width: 100%;
     padding: 5px;
     margin: 5px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid #ccc;
     height: 75px;
 }
@@ -221,7 +219,7 @@ div.result-overview>img {
     float:left;
     padding: 15px;
     width: 45%;
-    font-size: 16px;
+    font-size: 19px;
     cursor: pointer;
     align-content: center;
     align-items: center;
@@ -231,7 +229,7 @@ div.result-overview>img {
     float:left;
     width:4.0em;
     margin: 5px;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 #ck-button label span {
@@ -249,7 +247,7 @@ div.result-overview>img {
 }
 
 #ck-button input[type='checkbox']:checked + span>label {
-    font-weight: bolder;
+    font-weight: 400;
 }
 
 div.account-buttons {
@@ -272,7 +270,7 @@ input[type='checkbox'] {
 }
 
 .checked {
-    background-color: red;
+    background-color: black;
 }
 
 
@@ -282,8 +280,8 @@ img.small {
 }
 
 div.app-info th {
-    font-style: italic;
-    font-weight: normal;
+    font-style: normal;
+    font-weight: 400;
     padding-right: 10px;
 }
 
@@ -361,7 +359,7 @@ table.printout_columns tr th td {
 
 table.printout_columns > tbody > tr > th {
     text-align: left;
-    font-weight: normal;
+    font-weight: 400;
     width: 600px;
 }
 
@@ -378,15 +376,15 @@ table.printout_columns td {
 }
 
 #printout-header th {
-    font-style: italic;
-    font-weight: normal;
+    font-style: normal;
+    font-weight: 400;
 }
 
 .appsummary {
-  border-left: 6px solid goldenrod;
-  background-color: #fef2cb;
+  border-left: 6px solid #fffaf0;
+  background-color: #fffaf0;
   padding: 10px 15px;
-  font-size: small;
+  font-size: 16px;
   margin-top: 52px;
 }
 
@@ -418,7 +416,7 @@ table.appinfo th {
 }
 
 .summarybubble .number {
-    font-size: 45pt;
+    font-size: 14pt;
 }
 
 .summarybubble th {
@@ -514,33 +512,33 @@ table.summarytable ul {
 }
 
 span .badge .badge-danger {
-    background-color: red;
+    background-color: black;
 }
 
 .flag {
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 19px;
+    font-weight: 400;
     line-height: 1;
-    color: #fff;
+    color: #000000;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
-    background-color: #777;
+    background-color: #fffaf0;
     border-radius: 10px;
-    font-size: 11pt;
+    font-size: 12pt;
 }
 
 .flag-warning {
-    color: #fff;
-    background-color: goldenrod;
+    color: #000000;
+    background-color: #fffaf0;
 }
 
 .flag-danger {
-    color: #fff;
-    background-color: maroon;
+    color: #000000;
+    background-color:  #fffaf0;
 }
 
 .flag[empty] {
@@ -551,7 +549,7 @@ tr.form-question > th {
     width: 40%;
     vertical-align: top;
     padding-top: 5px;
-    font-weight: normal !important;
+    font-weight: 400 !important;
 }
 
 tr.form-question > td > select {
@@ -610,7 +608,7 @@ table.screenshots > tbody > tr > th > label {
 }
 
 div.screenshotfail {
-    background-color: goldenrod;
+    background-color: #fffaf0;
 }
 
 table.accountinfo > tbody > tr > th > h4 {
@@ -620,7 +618,7 @@ table.accountinfo > tbody > tr > th > h4 {
 div.form-responses table {
     border-collapse: collapse;
     width: 100%;
-    font-size: 11pt;
+    font-size: 12pt;
     border-radius: 2px;
 }
 
@@ -629,7 +627,7 @@ div.form-responses table td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     vertical-align: top;
-    font-weight: normal;
+    font-weight: 400;
     text-align: left;
     padding: 7px 5px;
 }
@@ -645,7 +643,7 @@ div.form-responses table td {
 
 
 .form-responses td:first-child {
-  font-weight: bold;
+  font-weight: 400;
   background: #f9f9f9;
   width: 40%;
 }
@@ -657,7 +655,7 @@ div.form-responses table td {
 }
 
 .form-responses thead th {
-    font-weight: bold !important;
+    font-weight: 400 !important;
     text-align: center !important;
 }
 
@@ -665,8 +663,8 @@ table.data-table th {
     text-align: right;
     vertical-align: top;
     padding-right: 15px;
-    font-weight: normal;
-    font-style: italic;
+    font-weight: 400;
+    font-style: normal;
 }
 
 table.data-table td {
@@ -690,7 +688,7 @@ p.report-explainer {
   padding-left: 10px;
   background-color: #dddddd;
   color: #222;
-  font-weight: bold;
+  font-weight: 400;
   margin-top: 40px;
 }
 
@@ -707,7 +705,7 @@ div.line {
   bottom: 0;
   left: 0;
   right: 0;
-  font-size: 9pt;
+  font-size: 12pt;
   text-align: center;
   padding: 5mm 0;
   color: #555;
@@ -725,7 +723,7 @@ table.summary-table > tbody > tr > td {
     vertical-align: top;
     padding: 5px 10px;
     border: 1px solid #ddd;
-    font-weight: normal;
+    font-weight: 400;
 }
 
 table.summary-table > tbody > tr > th {
@@ -736,7 +734,7 @@ table.summary-table {
     border: 1px solid #ddd;
     border-collapse: collapse;
     width: 100%;
-    font-size: 11pt;
+    font-size: 12pt;
     border-radius: 2px;
 }
 
@@ -756,15 +754,15 @@ table.summary-table ul, table.summary-table ol {
 }
 
 table.summary-table li {
-  margin-bottom: 8px; /* reduce vertical spacing between items */
+  margin-bottom: 8px; /* blackuce vertical spacing between items */
   line-height: 1.4em;   /* tighten line spacing */
 }
 
 span.inlinerisk {
-    background-color: #fef2cb;
+    background-color: #fffaf0;
     padding: 2px 5px;
     border-radius: 5px;
-    font-weight: normal;
+    font-weight: 400;
 }
 
 
@@ -775,7 +773,7 @@ span.inlinerisk {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: 'Georgia', serif;
+  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   color: #222;
   background-color: #fff;
 }
@@ -786,12 +784,12 @@ span.inlinerisk {
 }
 
 .report-title {
-  font-size: 36pt;
+  font-size: 14pt;
   margin-bottom: 0.2em;
 }
 
 .report-subtitle {
-  font-size: 16pt;
+  font-size: 12pt;
   margin-bottom: 2em;
   color: #555;
 }
@@ -804,7 +802,7 @@ span.inlinerisk {
 }
 
 .cover-footer {
-  font-size: 10pt;
+  font-size: 12pt;
   color: #888;
 }
 
@@ -833,14 +831,14 @@ span.inlinerisk {
 .app-info-table, .permissions-used {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10.5pt;
+  font-size: 12pt;
   margin: 1em 0;
 }
 
 .app-info-table th {
   text-align: right;
   color: #666;
-  font-weight: 500;
+  font-weight: 400;
   padding: 4px 10px;
   vertical-align: top;
   white-space: nowrap;
@@ -853,21 +851,21 @@ span.inlinerisk {
 }
 
 .tag {
-  font-size: 9pt;
+  font-size: 12pt;
   text-transform: uppercase;
-  color: #555;
+  color: #000000;
   background: #f0f0f0;
   border-radius: 3px;
   padding: 5px;
   margin-left: 10px;
-  font-family: sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 0.5px;
   width: auto;
   font-style: normal;
 }
 
 .appid {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #manualadd {
@@ -894,7 +892,7 @@ td.buttons-in-details {
 }
 
 div.screenshot-metadata {
-    font-size: 9pt;
+    font-size: 12pt;
     padding: 10px;
     margin-top: 20px;
     width: 100%;
@@ -904,7 +902,7 @@ div.screenshot-metadata {
 .screenshot-metadata th {
   text-align: right;
   color: #666;
-  font-weight: 500;
+  font-weight: 400;
   padding: 0px 10px;
   vertical-align: top;
   white-space: nowrap;
@@ -914,14 +912,14 @@ div.screenshot-metadata {
   padding: 0px 10px;
   color: black;
   vertical-align: top;
-  font-weight: normal;
+  font-weight: 400;
 }
 
 .serial-or-udid {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding: 0px;
     margin: 0px;
-    font-weight: 600px;
+    font-weight: 400;
 }
 
 span.signature {
@@ -944,3 +942,21 @@ div.generate-printout input[type="text"] {
 div.generate-printout input[type="submit"] {
     margin-top: 5px;
 }
+
+/* --- Override: OCR-SAFE BULLET POINTS: Use + instead of • --- */
+ul, ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+ul li::before,
+ol li::before {
+    content: "+ ";
+    font-weight: 700;      /* strong contrast */
+    font-size: 18pt;       /* OCR-safe size */
+    line-height: 1;        /* keeps alignment clean */
+    display: inline-block; /* prevents shifting */
+    width: 20px;           /* keeps items aligned */
+}
+

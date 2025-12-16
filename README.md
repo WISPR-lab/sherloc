@@ -28,14 +28,16 @@ xcode-select --install
 brew install python@3.10
 ```
 
-### wkhtmltopdf requirement
-This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
+### WeasyPrint requirement
+The updated code uses WeasyPrint for pdf rendering and requires the below installations:
 
-If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
+macOS (Intel + Apple Silicon):
 
-To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing
+brew install pango libffi cairo gdk-pixbuf
 
-Click open anyway and continue installation
+Linux (Ubuntu/Debian):
+sudo apt install libpango-1.0-0 libcairo2 libgdk-pixbuf-2.0-0 libffi8
+
 
 ### Operating system dependencies
 

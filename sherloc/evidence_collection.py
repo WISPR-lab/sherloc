@@ -20,7 +20,8 @@ from pprint import pprint
 
 import config
 import jinja2
-import pdfkit
+# import pdfkit -- replaced with WeasyPrint
+from weasyprint import HTML, CSS
 from config import DUMP_DIR, REPORT_DIR, SCREENSHOT_DIR, SHERLOC_VERSION
 from filelock import FileLock
 from flask_wtf import FlaskForm
@@ -1510,22 +1511,51 @@ def create_printout(context):
     with open('a.html', 'w') as f:
         f.write(html_string)
     
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    # config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf') -- switching to weasyprint (it's open source) based on chatgpt recommendation
 
-    options = {
-        'enable-local-file-access': True,
-        'margin-top': '52mm',
-        'margin-bottom': '52mm',
-        'margin-left': '10mm',
-        'margin-right': '10mm',
-        'header-spacing': '0',
-        'footer-spacing': '0',
-        'footer-center': 'Page [page] of [toPage]',
-        'footer-font-name': 'Helvetica Neue',
-        'footer-font-size': '12',
-    }
+    # options = {
+    #     'enable-local-file-access': True,
+    #     'margin-top': '52mm',
+    #     'margin-bottom': '52mm',
+    #     'margin-left': '10mm',
+    #     'margin-right': '10mm',
+    #     'header-spacing': '0',
+    #     'footer-spacing': '0',
+    #     'footer-center': 'Page [page] of [toPage]',
+    #     'footer-font-name': 'Helvetica Neue',
+    #     'footer-font-size': '12',
+    # }
 
-    pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+    # pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+
+    # WeasyPrint needs a base_url so relative links in HTML/CSS work (images, fonts, css)
+    base_url = os.path.abspath(".")
+
+    # Keep using your existing stylesheet file
+    stylesheets = [
+        CSS(filename=css_path),
+
+        # Minimal replacement for wkhtmltopdf options (margins + footer page numbering)
+        CSS(string="""
+            @page {
+              margin-top: 52mm;
+              margin-bottom: 52mm;
+              margin-left: 10mm;
+              margin-right: 10mm;
+
+              @bottom-center {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12pt;
+              }
+            }
+        """)
+    ]
+
+    HTML(string=html_string, base_url=base_url).write_pdf(
+        out_file,
+        stylesheets=stylesheets
+    )
 
     print("Printout created. Filename is", out_file)
 

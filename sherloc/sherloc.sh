@@ -2,12 +2,13 @@
 #
 # Run: ./sherloc.sh [--install] [--nosudo]
 #
-# Sets up the environment for Sherloc to run. 
+# Sets up the environment for Sherloc to run.
 # Creates a new virtual environment, activates, and installs requirements.
 # Then, runs Sherloc.
 # Deactivates afterward.
 
-VENV="sherloc-venv"
+PYTHON=python${PYTHON_VERSION:='3.10'}
+: ${VENV:='sherloc-venv'}
 
 # Check for --install and --notsudo arguments
 INSTALL_REQS=false
@@ -25,12 +26,10 @@ done
 # Create virtual environment if not exists
 if [ ! -d $VENV ]; then
     echo "🐍 Creating virtual environment ($VENV)..."
-    virtualenv $VENV
+    $PYTHON -m venv $VENV
     EXIT_CODE=$?
     if [ $EXIT_CODE -ne 0 ]; then
-        echo "Oops, need to install virtualenv first. Installing..."
-        pip install virtualenv
-        virtualenv $VENV
+        echo "Oops, Python distribution is missing the venv module"
     fi
 fi
 
@@ -41,7 +40,7 @@ echo "✅ Activated $VENV"
 # Install requirements if requested
 if $INSTALL_REQS; then
     echo "📦 Installing requirements..."
-    pip install -r requirements.txt
+    $PYTHON -m pip install -r requirements.txt
 fi
 
 # Create log folder if needed
@@ -64,13 +63,13 @@ fi
 
 if $USE_SUDO; then
     echo "🚀 Launching Sherloc with sudo..."
-    sudo python3 main.py
+    sudo $PYTHON main.py
     EXIT_CODE=$?
     echo "=================================================="
 else
     echo "🚀 Launching Sherloc..."
     echo "=================================================="
-    python3 main.py
+    $PYTHON main.py
     EXIT_CODE=$?
 fi
 
@@ -78,14 +77,14 @@ fi
 if [ $EXIT_CODE -ne 0 ]; then
     echo "=================================================="
     echo "⚠️ Sherloc failed to launch. Attempting to install missing requirements..."
-    pip install -r requirements.txt
+    $PYTHON -m pip install -r requirements.txt
     echo "🔁 Retrying launch..."
     if $USE_SUDO; then
-        sudo python3 main.py
+        sudo $PYTHON main.py
         EXIT_CODE=$?
         echo "=================================================="
     else
-        python3 main.py
+        $PYTHON main.py
         EXIT_CODE=$?
         echo "=================================================="
     fi

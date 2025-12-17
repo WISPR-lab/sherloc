@@ -773,7 +773,7 @@ span.inlinerisk {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #222;
   background-color: #fff;
 }

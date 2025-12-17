@@ -20,8 +20,7 @@ from pprint import pprint
 
 import config
 import jinja2
-# import pdfkit -- replaced with WeasyPrint
-from weasyprint import HTML, CSS
+import pdfkit
 from config import DUMP_DIR, REPORT_DIR, SCREENSHOT_DIR, SHERLOC_VERSION
 from filelock import FileLock
 from flask_wtf import FlaskForm
@@ -634,7 +633,7 @@ class TAQDevices(DictInitClass):
 
 class TAQAccounts(DictInitClass):
     questions = {'pwd_mgmt': "How do you remember your passwords?",
-                 'pwd_mgmt_describe': "Please provide more details on how you remember your passwords.",
+                 'pwd_mgmt-describe': "Please provide more details on how you remember your passwords.",
                  'pwd_comp': "Do you believe the person of concern knows, or could guess, any of your passwords?",
                  'pwd_comp_which': "Which passwords do you believe are compromised, and why?"}
     attrs = list(questions.keys())
@@ -1432,7 +1431,7 @@ class TAQDeviceCompForm(FlaskForm):
 class TAQAccountsForm(FlaskForm):
     title = "Account and Password Management"
     pwd_mgmt = SelectMultipleField(TAQAccounts().questions['pwd_mgmt'], choices=PWD_CHOICES)
-    pwd_mgmt_describe = TextAreaField(TAQAccounts().questions['pwd_mgmt_describe'])
+    pwd_mgmt_describe = TextAreaField(TAQAccounts().questions['pwd_mgmt-describe'])
     pwd_comp = RadioField(
         TAQAccounts().questions['pwd_comp'], choices=YES_NO_UNSURE_CHOICES, default=YES_NO_DEFAULT)
     pwd_comp_which = TextAreaField(TAQAccounts().questions['pwd_comp_which'])
@@ -1508,54 +1507,22 @@ def create_printout(context):
 
     
     html_string = template.render(context)
-    with open('a.html', 'w') as f:
-        f.write(html_string)
-    
-    # config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf') -- switching to weasyprint (it's open source) based on chatgpt recommendation
 
-    # options = {
-    #     'enable-local-file-access': True,
-    #     'margin-top': '52mm',
-    #     'margin-bottom': '52mm',
-    #     'margin-left': '10mm',
-    #     'margin-right': '10mm',
-    #     'header-spacing': '0',
-    #     'footer-spacing': '0',
-    #     'footer-center': 'Page [page] of [toPage]',
-    #     'footer-font-name': 'Helvetica Neue',
-    #     'footer-font-size': '12',
-    # }
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
-    # pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+    options = {
+        'enable-local-file-access': True,
+        'margin-top': '15mm',
+        'margin-bottom': '20mm',
+        'margin-left': '10mm',
+        'margin-right': '10mm',
+        'footer-spacing': '5',
+        'footer-center': 'Page [page] of [toPage]',
+        'footer-font-name': 'Helvetica Neue',
+        'footer-font-size': '12',
+    }
 
-    # WeasyPrint needs a base_url so relative links in HTML/CSS work (images, fonts, css)
-    base_url = os.path.abspath(".")
-
-    # Keep using your existing stylesheet file
-    stylesheets = [
-        CSS(filename=css_path),
-
-        # Minimal replacement for wkhtmltopdf options (margins + footer page numbering)
-        CSS(string="""
-            @page {
-              margin-top: 52mm;
-              margin-bottom: 52mm;
-              margin-left: 10mm;
-              margin-right: 10mm;
-
-              @bottom-center {
-                content: "Page " counter(page) " of " counter(pages);
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 12pt;
-              }
-            }
-        """)
-    ]
-
-    HTML(string=html_string, base_url=base_url).write_pdf(
-        out_file,
-        stylesheets=stylesheets
-    )
+    pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
 
     print("Printout created. Filename is", out_file)
 

@@ -20,7 +20,8 @@ from pprint import pprint
 
 import config
 import jinja2
-import pdfkit
+# import pdfkit
+from weasyprint import HTML, CSS
 from config import DUMP_DIR, REPORT_DIR, SCREENSHOT_DIR, SHERLOC_VERSION
 from filelock import FileLock
 from flask_wtf import FlaskForm
@@ -1508,21 +1509,32 @@ def create_printout(context):
     
     html_string = template.render(context)
 
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    # config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
-    options = {
-        'enable-local-file-access': True,
-        'margin-top': '15mm',
-        'margin-bottom': '20mm',
-        'margin-left': '10mm',
-        'margin-right': '10mm',
-        'footer-spacing': '5',
-        'footer-center': 'Page [page] of [toPage]',
-        'footer-font-name': 'Helvetica Neue',
-        'footer-font-size': '12',
-    }
+    # options = {
+    #     'enable-local-file-access': True,
+    #     'margin-top': '15mm',
+    #     'margin-bottom': '20mm',
+    #     'margin-left': '10mm',
+    #     'margin-right': '10mm',
+    #     'footer-spacing': '5',
+    #     'footer-center': 'Page [page] of [toPage]',
+    #     'footer-font-name': 'Roboto Mono',
+    #     'footer-font-size': '12',
+    # }
 
-    pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+    #debugging
+    debug_html_path = os.path.join("reports", "debug_printout.html")
+
+    with open(debug_html_path, "w", encoding="utf-8") as f:
+        f.write(html_string)
+
+    
+    html = HTML(string=html_string)
+    css = CSS(filename=css_path)
+    html.write_pdf(out_file, stylesheets=[css])
+
+    # pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
 
     print("Printout created. Filename is", out_file)
 

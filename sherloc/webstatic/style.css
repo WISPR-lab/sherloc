@@ -1,3 +1,18 @@
+/* ===== ROBOTO MONO – WKHTMLTOPDF SAFE ===== */
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("../webstatic/fonts/roboto-mono/RobotoMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("../webstatic/fonts/roboto-mono/RobotoMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
 
 input[type=radio] {
     margin: 2px;
@@ -773,7 +788,7 @@ span.inlinerisk {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto Mono", monospace;
   color: #222;
   background-color: #fff;
 }
@@ -858,7 +873,7 @@ span.inlinerisk {
   border-radius: 3px;
   padding: 5px;
   margin-left: 10px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto Mono", monospace;
   letter-spacing: 0.5px;
   width: auto;
   font-style: normal;
@@ -960,3 +975,8 @@ ol li::before {
     width: 20px;           /* keeps items aligned */
 }
 
+/* html, body {
+  font-family: "Roboto Mono", monospace !important;
+  font-size: 12pt;
+  line-height: 1.35;
+} */

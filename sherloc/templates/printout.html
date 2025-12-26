@@ -4,15 +4,15 @@
     <link rel="stylesheet" href="../webstatic/style.css">
     <style>
         /* margins for printing */
-        body  { padding: 5mm; font-size: 12pt; font-weight: 400px;}
+        body  { padding: 5mm; font-size: 16pt; font-weight: 400px;}
         .new-page { padding-top: 5mm; }
-        h1 {font-size: 15pt;}
-        h2 {font-size: 14pt;}
-        h2 {font-size: 13pt;}
-        h3 {font-size: 12pt;}
-        h1, h2, h3, h4, h5, h6 {
+        h1 {font-size: 16pt;}
+        h2 {font-size: 16pt;}
+        h2 {font-size: 16pt;}
+        h3 {font-size: 16pt;}
+        /* h1, h2, h3, h4, h5, h6 {
             font-weight: normal;
-        }
+        } */
 
         .app-padding-top {padding-top: 12mm;}
 
@@ -96,7 +96,7 @@
                             {% if scan.risk_report.risk_present %}
                                 <ul>
                                     {% for risk in scan.risk_report.risk_details %}
-                                    <li><span class="inlinerisk"><span></span> {{risk.risk}}</span>: {{risk.description}}</li>
+                                    <li><span style = "color:darkblue;"class="inlinerisk">{{risk.risk}}</span>: {{risk.description}}</li>
                                     {% endfor %}
                                 </ul>
                             {% else %}
@@ -182,35 +182,37 @@
             <tr valign="top">
                 <th>    
                     <h3>Risk of Device Compromise <span class="tag"> Human entered</span></h3>
-                    <div class="form-responses">
-                    <table>
-                        <thead>
-                            <tr>
-                            <th>Question</th>
-                            <th>Response</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for q in formquestions["taq"]["devices"] %}
-                            <tr>
-                                <th>{{formquestions["taq"]["devices"][q]}}</th>
-                                {% if select_text[taq["devices"][q]] %}
-                                <td>{{select_text[taq["devices"][q]]}}</td>
-                                {% else %}
-                                <td>{{taq["devices"][q]}}</td>
-                                {% endif %}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class = "form-container">
+                        <div class="form-responses">
+                        <table class>
+                            <thead>
+                                <tr>
+                                <th>Question</th>
+                                <th>Response</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for q in formquestions["taq"]["devices"] %}
+                                <tr>
+                                    <th>{{formquestions["taq"]["devices"][q]}}</th>
+                                    {% if select_text[taq["devices"][q]] %}
+                                    <td>{{select_text[taq["devices"][q]]}}</td>
+                                    {% else %}
+                                    <td>{{taq["devices"][q]}}</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
                 </th>
                 <td>
                     {% for risk in taq["devices"]["risk_report"]["risk_details"] %}
-                    <div class="appsummary">
-                       <span> </span> 
-                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}
-                       </span>
+                    <!-- <div class = "appsummary-container"> -->
+                        <div class="appsummary">
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
+                        </div>
                     </div>
                     {% endfor %}
                 </td>
@@ -272,14 +274,12 @@
                 <td>
                     {% for risk in taq["accounts"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                     {% for risk in taq["sharing"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -325,8 +325,7 @@
                 <td>
                     {% for risk in taq["smarthome"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                       <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                    <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -365,9 +364,8 @@
                 <td>
                     {% for risk in taq["kids"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
                        <span>
-                            {{risk["risk"]}}:<br>{{risk["description"]}}
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                         </span>
                     </div>
                     {% endfor %}
@@ -401,7 +399,7 @@
             <tr>
                 <th>
                 <h3>Device Details {% if not scan.manual %}<span class="tag"> System captured </span>{% else %}<span class="tag"> Human entered</span>{%endif%}</h3>
-                <table class="appinfo data-table app-info-table">
+                <table class="appinfo-data-table-app-info-table">
                     <tbody>
                         <tr>
                             <th>Device Nickname</th>
@@ -436,7 +434,7 @@
             <tr valign="top">
                 <th>
                     <h3>Jailbreak Assessment {% if not scan.manual %}<span class="tag"> System captured </span>{%else%}<span class="tag"> Human entered</span>{%endif%}</h3>
-                    <table class="appinfo data-table app-info-table">
+                    <table class="appinfo-data-table-app-info-table">
                         <tbody>
                             <tr>
                                 <th>Evidence of Jailbreaking?</th>
@@ -474,7 +472,7 @@
                                             <div class="form-screenshot">
                                                 <img height='400px' src="{{url_root}}{{fname}}"/>
                                             </div>
-                                                <div class="screenshot-metadata">Screenshot Metadata:
+                                                <!-- <div class="screenshot-metadata">Screenshot Metadata:
                                                     <table>
                                                         <tbody>
                                                             {% for k, v in scan.screenshot_info[loop.index0].metadata.items() %}
@@ -485,7 +483,7 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
@@ -538,7 +536,7 @@
             <tr>
                 <th>
                     <h3>App Information {% if not scan.manual %}<span class="tag"> System captured </span>{%else%}<span class="tag"> Human entered </span>{%endif%}</h3>
-                    <table class="appinfo data-table app-info-table">
+                    <table class="appinfo-data-table-app-info-table">
                         <tbody>
                             <tr>
                                 <th>App ID</th>
@@ -565,12 +563,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>App Description</th>
-                                <td>
+                               <th>App Description</th>
+                                <td class="app-description">
                                     {% if app.description %}
-                                    {{app.description}}
+                                        {{ app.description }}
                                     {% else %}
-                                    None provided.
+                                        None provided.
                                     {% endif %}
                                 </td>
                             </tr>
@@ -735,28 +733,28 @@
                     <table>
                         <tbody>
                             <tr>
-                        {% for fname in app.screenshot_files %}
-                                    <th>
-                                        <div class="form-screenshot">
-                                            <img height='400px' src="{{url_root}}{{fname}}"/>
-                                        </div>
-                                            <div class="screenshot-metadata">Screenshot Metadata:
-                                                <table>
-                                                    <tbody>
-                                                        {% for k, v in app.screenshot_info[loop.index0].metadata.items() %}
-                                                        <tr>
-                                                            <th>{{k}}</th>
-                                                            <td>{{v}}</td>
-                                                        </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                    </th>
-                                    {# Break for long rows #}
-                                    {% if loop.index % 3 == 0 %}
-                                    </tr><tr> 
-                                    {% endif %}
+                                {% for fname in app.screenshot_files %}
+                                <th>
+                                    <div class="form-screenshot" style="page-break-inside: avoid;">
+                                        <img src="{{url_root}}{{fname}}" style="height:300px; display:block; margin-left: 20px;"/>
+                                    </div>
+                                        <!-- <div class="screenshot-metadata">Screenshot Metadata:
+                                            <table>
+                                                <tbody>
+                                                    {% for k, v in app.screenshot_info[loop.index0].metadata.items() %}
+                                                    <tr>
+                                                        <th>{{k}}</th>
+                                                        <td>{{v}}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div> -->
+                                </th>
+                                {# Break for long rows #}
+                                {% if loop.index % 3 == 0 %}
+                                </tr><tr> 
+                                {% endif %}
                         {% endfor %}
                             </tr>
                         </tbody>
@@ -841,7 +839,7 @@
                                             <div class="form-screenshot">
                                                 <img height='400px' src="{{url_root}}{{fname}}"/>
                                             </div>
-                                                <div class="screenshot-metadata">Screenshot Metadata:
+                                                <!-- <div class="screenshot-metadata">Screenshot Metadata:
                                                     <table>
                                                         <tbody>
                                                             {% for k, v in account["suspicious_logins"]["screenshot_info"][loop.index0]["metadata"].items() %}
@@ -852,7 +850,7 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
@@ -868,8 +866,7 @@
                 <td>
                     {% for risk in account["suspicious_logins"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -903,8 +900,7 @@
                 <td>
                     {% for risk in account["password_check"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                     <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -933,8 +929,6 @@
                         </tbody>
                     </table>    
                 </div>
-
-
                 {% if account["recovery_settings"]["screenshot_files"]|length > 0 %}
                 <div class="screenshot-container">
             <h4>Screenshots <span class="tag"> System captured </span></h4>
@@ -946,7 +940,7 @@
                                             <div class="form-screenshot">
                                                 <img height='400px' src="{{url_root}}{{fname}}"/>
                                             </div>
-                                                <div class="screenshot-metadata">Screenshot Metadata:
+                                                <!-- <div class="screenshot-metadata">Screenshot Metadata:
                                                     <table>
                                                         <tbody>
                                                             {% for k, v in account["recovery_settings"]["screenshot_info"][loop.index0]["metadata"].items() %}
@@ -957,7 +951,7 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
@@ -973,8 +967,7 @@
                 <td>
                     {% for risk in account["recovery_settings"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -1022,7 +1015,7 @@
                                             <div class="form-screenshot">
                                                 <img height='400px' src="{{url_root}}{{fname}}"/>
                                             </div>
-                                                <div class="screenshot-metadata">Screenshot Metadata:
+                                                <!-- <div class="screenshot-metadata">Screenshot Metadata:
                                                     <table>
                                                         <tbody>
                                                             {% for k, v in account["two_factor_settings"]["screenshot_info"][loop.index0]["metadata"].items() %}
@@ -1033,7 +1026,7 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
@@ -1049,8 +1042,7 @@
                 <td>
                     {% for risk in account["two_factor_settings"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>
@@ -1093,7 +1085,7 @@
                                             <div class="form-screenshot">
                                                 <img height='400px' src="{{url_root}}{{fname}}"/>
                                             </div>
-                                                <div class="screenshot-metadata">Screenshot Metadata:
+                                                <!-- <div class="screenshot-metadata">Screenshot Metadata:
                                                     <table>
                                                         <tbody>
                                                             {% for k, v in account["security_questions"]["screenshot_info"][loop.index0]["metadata"].items() %}
@@ -1104,7 +1096,7 @@
                                                             {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
+                                                </div> -->
                                         </th>
                                         {# Break for long rows #}
                                         {% if loop.index % 3 == 0 %}
@@ -1120,8 +1112,7 @@
                 <td>
                     {% for risk in account["security_questions"]["risk_report"]["risk_details"] %}
                     <div class="appsummary">
-                        <span> </span> 
-                        <span>{{risk["risk"]}}:<br>{{risk["description"]}}</span>
+                        <span style="color: darkblue;">{{risk["risk"]}}</span><p>{{risk["description"]}}</p>
                     </div>
                     {% endfor %}
                 </td>

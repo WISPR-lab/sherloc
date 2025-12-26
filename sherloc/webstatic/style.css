@@ -35,7 +35,7 @@ a.appid {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  font-size: 14pt;
+  font-size: 16pt;
   src: url(http://localhost:6200/webstatic/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
 }
 
@@ -43,7 +43,7 @@ a.appid {
   font-family: 'Material Icons';
   font-weight: 400;
   font-style: normal;
-  font-size: 19px;
+  font-size: 16pt;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -61,14 +61,17 @@ details {
 
   details:not(.appselect) >summary {
     margin-bottom: 20px;
+    width: 100%;
   }
 
   details:not(.appselect)[open] >summary {
     margin-bottom: 0px;
+    width: 100%;
+
   }
 
   details >summary span.icon {
-    width: 24px;
+    width: 100%;
     height: 24px;
     transition: all 0.3s;
     margin-left: 0px;
@@ -115,12 +118,13 @@ details {
 
   details:not(.appselect) > summary {
     display: flex;
+    width: 100%;
     cursor: pointer;
     background-color: rgb(180, 142, 207);
     color: black;
     padding: 10px;
     border-radius: 20px;
-    font-size: 14pt;
+    font-size: 16pt;
   }
 
   table.appselect > tbody > tr > td > details {
@@ -142,7 +146,7 @@ details {
     color: white;
     padding: 6px 12px;
     border-radius: 4px;
-    font-size: 19px;
+    font-size: 16pt;
   }
 
   .section-content {
@@ -154,7 +158,7 @@ details {
   border-top: 2px solid #666;
   padding-top: 10px;
   margin-top: 20px;
-  font-size: 14pt;
+  font-size: 16pt;
 }
 
 .section-title {
@@ -185,6 +189,7 @@ details {
     padding-right: 10px;
     font-style: normal;
     font-weight: 400;
+    width: 100%;
   }
 
   input {
@@ -196,7 +201,7 @@ details {
     text-align: left;
     background: rgb(66, 15, 103);
     color: white;
-    font-size: 16px;
+    font-size: 16pt;
   }
 
 div.progress-bar {
@@ -216,7 +221,7 @@ textarea {
 div.result-overview {
     text-align: center;
     margin-bottom: 10px;
-    font-size: 14pt;
+    font-size: 16pt;
     padding: 10px;
 }
 
@@ -234,7 +239,7 @@ div.result-overview>img {
     float:left;
     padding: 15px;
     width: 45%;
-    font-size: 19px;
+    font-size: 16pt;
     cursor: pointer;
     align-content: center;
     align-items: center;
@@ -395,12 +400,23 @@ table.printout_columns td {
     font-weight: 400;
 }
 
+/* .appsummary-container{
+    width: 100%;
+    float: right;
+
+} */
+
 .appsummary {
-  border-left: 6px solid #fffaf0;
-  background-color: #fffaf0;
+  background-color: #fff3f0;
   padding: 10px 15px;
-  font-size: 16px;
-  margin-top: 52px;
+  font-size: 16pt;
+  margin-bottom: 20px; /* Adds 20px of space below each div */
+  margin-right: 30px;
+  float: right;
+  width: 200%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  position:relative;
 }
 
 .footer {
@@ -431,7 +447,7 @@ table.appinfo th {
 }
 
 .summarybubble .number {
-    font-size: 14pt;
+    font-size: 16pt;
 }
 
 .summarybubble th {
@@ -466,14 +482,13 @@ table.appinfo th {
     margin-right: 25px;
     max-width: 200px;
     height: auto;
-    border: 1px solid black;
+    border: 4px solid rgb(206, 190, 190);
     float: left;
 }
 
 .screenshot-container {
     margin: 0px;
     padding-bottom: 10px;
-
 }
 
 table.appselect > tbody > tr > td > p {
@@ -534,7 +549,7 @@ span .badge .badge-danger {
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
-    font-size: 19px;
+    font-size: 16pt;
     font-weight: 400;
     line-height: 1;
     color: #000000;
@@ -543,7 +558,6 @@ span .badge .badge-danger {
     vertical-align: middle;
     background-color: #fffaf0;
     border-radius: 10px;
-    font-size: 12pt;
 }
 
 .flag-warning {
@@ -630,12 +644,60 @@ table.accountinfo > tbody > tr > th > h4 {
     padding-right: 10px;
 }
 
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+
 div.form-responses table {
     border-collapse: collapse;
     width: 100%;
-    font-size: 12pt;
+    font-size: 16pt;
     border-radius: 2px;
+    page-break-inside: avoid;
 }
+
+.appinfo-data-table-app-info-table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+}
+
+.appinfo-data-table-app-info-table th,
+.appinfo-data-table-app-info-table td {
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.appid {
+    word-break: break-all;
+}
+
+.appinfo {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.app-description {
+    width:100%;         /* adjust as needed */
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.form-container {
+    width: 100%; /* The container takes up the full page width by default */
+    /* You can make the container itself a "mini page" by setting its own width */
+    /* e.g., width: 80vw; or width: 600px; */
+}
+
+.form-responses{
+    max-width: 70%; /* This is the key property */
+    /* Add some basic styling to make the div visible */
+}
+
 
 div.form-responses table th,
 div.form-responses table td {
@@ -643,35 +705,61 @@ div.form-responses table td {
     border: 1px solid #ddd;
     vertical-align: top;
     font-weight: 400;
+    width: 30%;
     text-align: left;
     padding: 7px 5px;
+    word-wrap: break-word; /* Older, but widely supported property */
+    overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+    white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 
 div.form-responses table th {
     background-color: #f5f5f5;
-    width: 50%;
+    width: 30%;
+    word-wrap: break-word; /* Older, but widely supported property */
+    overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+    white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 
 div.form-responses table td {
     background-color: #fff;
+    width: 30%;
+    word-wrap: break-word; /* Older, but widely supported property */
+    overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+    white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 
 
 .form-responses td:first-child {
   font-weight: 400;
   background: #f9f9f9;
-  width: 40%;
+  width: 30%;
+  word-wrap: break-word; /* Older, but widely supported property */
+  overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+  white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 .form-responses td:last-child {
   color: #333;
+  width: 30%;
+  word-wrap: break-word; /* Older, but widely supported property */
+  overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+  white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 .form-responses tr {
   border-bottom: 1px solid #ddd;
+  width: 30%;
+  word-wrap: break-word; /* Older, but widely supported property */
+  overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+  white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 
 .form-responses thead th {
     font-weight: 400 !important;
     text-align: center !important;
+    width: 30%;
+    word-wrap: break-word; /* Older, but widely supported property */
+    overflow-wrap: break-word; /* The standard property, effectively an alias for word-wrap */
+    white-space: normal; /* Ensures any 'nowrap' default is overridden */
 }
 
 table.data-table th {
@@ -680,17 +768,19 @@ table.data-table th {
     padding-right: 15px;
     font-weight: 400;
     font-style: normal;
+    width: 30%;
 }
 
 table.data-table td {
     text-align: left;
+    width: 30%;
 }
 
 div.comments {
     border: 1px lightgray solid;
     padding: 10px;
     margin: 5px;
-    width: 90%;
+    width: 30%;
 }
 
 p.report-explainer {
@@ -720,7 +810,7 @@ div.line {
   bottom: 0;
   left: 0;
   right: 0;
-  font-size: 12pt;
+  font-size: 16pt;
   text-align: center;
   padding: 5mm 0;
   color: #555;
@@ -739,6 +829,7 @@ table.summary-table > tbody > tr > td {
     padding: 5px 10px;
     border: 1px solid #ddd;
     font-weight: 400;
+    page-break-inside: avoid;
 }
 
 table.summary-table > tbody > tr > th {
@@ -749,7 +840,7 @@ table.summary-table {
     border: 1px solid #ddd;
     border-collapse: collapse;
     width: 100%;
-    font-size: 12pt;
+    font-size: 16pt;
     border-radius: 2px;
 }
 
@@ -799,25 +890,25 @@ span.inlinerisk {
 }
 
 .report-title {
-  font-size: 14pt;
+  font-size: 16pt;
   margin-bottom: 0.2em;
 }
 
 .report-subtitle {
-  font-size: 12pt;
+  font-size: 16pt;
   margin-bottom: 2em;
   color: #555;
 }
 
 .cover-meta {
-  font-size: 12pt;
+  font-size: 16pt;
   text-align: left;
   margin: 0 auto 2em;
   line-height: 1.6;
 }
 
 .cover-footer {
-  font-size: 12pt;
+  font-size: 16pt;
   color: #888;
 }
 
@@ -846,7 +937,7 @@ span.inlinerisk {
 .app-info-table, .permissions-used {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12pt;
+  font-size: 16pt;
   margin: 1em 0;
 }
 
@@ -866,7 +957,7 @@ span.inlinerisk {
 }
 
 .tag {
-  font-size: 12pt;
+  font-size: 16pt;
   text-transform: uppercase;
   color: #000000;
   background: #f0f0f0;
@@ -877,6 +968,7 @@ span.inlinerisk {
   letter-spacing: 0.5px;
   width: auto;
   font-style: normal;
+  position: relative;
 }
 
 .appid {
@@ -907,7 +999,7 @@ td.buttons-in-details {
 }
 
 div.screenshot-metadata {
-    font-size: 12pt;
+    font-size: 16pt;
     padding: 10px;
     margin-top: 20px;
     width: 100%;
@@ -963,13 +1055,15 @@ ul, ol {
     list-style: none !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
+    font-size: 16pt !important;
+
 }
 
 ul li::before,
 ol li::before {
     content: "+ ";
     font-weight: 700;      /* strong contrast */
-    font-size: 18pt;       /* OCR-safe size */
+    font-size: 16pt;       
     line-height: 1;        /* keeps alignment clean */
     display: inline-block; /* prevents shifting */
     width: 20px;           /* keeps items aligned */
@@ -977,6 +1071,15 @@ ol li::before {
 
 /* html, body {
   font-family: "Roboto Mono", monospace !important;
-  font-size: 12pt;
+  font-size: 16pt;
   line-height: 1.35;
 } */
+
+@page {
+    size: Letter;
+    margin: 10mm; /* Set all margins to zero */
+}
+
+table {
+  border-collapse: collapse !important;
+}

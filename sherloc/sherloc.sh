@@ -9,6 +9,7 @@
 
 PYTHON=python${PYTHON_VERSION:='3.10'}
 : ${VENV:='sherloc-venv'}
+NORMAL_USER=$USER
 
 # Check for --install and --notsudo arguments
 INSTALL_REQS=false
@@ -19,6 +20,7 @@ for arg in "$@"; do
         break
     elif  [[ "$arg" == "--nosudo" ]]; then
         USE_SUDO=false
+        sudo chown -R $NORMAL_USER reports ../logs
         break
     fi
 done

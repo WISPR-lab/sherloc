@@ -14,6 +14,7 @@ Sherloc inside the Linux container of your choice.
 
 ### Python dependencies
 - You will need Python 3.6 or higher (check by running `python3` in your
+You will need Python 3.10 or higher (check by running `python3` in your
 Terminal and see what happens).  On macOS, you can get this by running the
 following commands in your Terminal application:
 

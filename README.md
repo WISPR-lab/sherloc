@@ -1,4 +1,4 @@
-# Sherloc 
+# Sherloc
 ### A.K.A. Software to Help with Evidence Retrieval and Log Online Cyberabuse
 
 Sherloc is a tool to support computer security clinics. It is meant to be run by a tech clinic consultant, allowing the consultant to enter findings and investigations. Then, Sherloc enables the consultant to create an evidentiary document synthesizing the consultation.
@@ -8,9 +8,7 @@ Sherloc is built on [ISDI](https://github.com/stopipv/isdi), which checks Androi
 ## Installing Sherloc :computer:
 
 Right now, Sherloc only natively supports **macOS and Linux**. If you are using a Windows device, you can use the Windows Subsystem for Linux 2
-(WSL2), which can be installed by following [these instructions](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install). After this,
-follow the remaining instructions as a Linux user would, cloning/running 
-Sherloc inside the Linux container of your choice. 
+(WSL2), which can be installed by following [these instructions](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install). After this, follow the remaining instructions as a Linux user would, cloning/running Sherloc inside the Linux container of your choice.
 
 ### Python dependencies
 - You will need Python 3.6 or higher (check by running `python3` in your
@@ -38,14 +36,14 @@ To fix this go to System Settings > Privacy & Security > Security and see the me
 
 Click open anyway and continue installation
 
-### Operating system dependencies
+#### Operating system dependencies
 
 #### Generic
 * [adb](https://developer.android.com/studio/releases/platform-tools.html)
 * expect
 * ideviceinstaller
 
-#### macOS
+##### macOS
 On macOS you can quickly install project dependencies with Homebrew by running `brew bundle`.
 
 You can also fulfill the requirements by doing:
@@ -54,7 +52,7 @@ brew install --cask android-platform-tools
 brew install expect ideviceinstaller exiftool
 ```
 
-#### Debian family
+##### Debian family
 
 ```
 sudo apt install adb expect libimobiledevice-utils ideviceinstaller ifuse
@@ -67,7 +65,9 @@ it won't work straightaway. You have to ensure having the *same* version of adb
 start the adb process first in Windows, then in WSL2 (with for example `adb
 devices`).
 
-# Running Sherloc
+---
+
+## Running Sherloc
 
 After Sherloc is installed, run the following command in the terminal (in
 the top-level directory of this repository):
@@ -79,15 +79,15 @@ cd sherloc
 
 There is an optional `--install` flag that installs requirements from `requirements.txt`. However, even without this flag, the script will notice if sherloc fails and install requirements anyway.
 
-Sherloc is run in sudo by default, which is required to take screenshots on iPhones using `pymobiledevice3`. If you do not want to run Sherloc with sudo, please use the `--nosudo` flag when running `./sherloc`. 
+Sherloc is run in sudo by default, which is required to take screenshots on iPhones using `pymobiledevice3`. If you do not want to run Sherloc with sudo, please use the `--nosudo` flag when running `./sherloc`.
 
 Sherloc should open `http://localhost:6200` in the browser.
 
-## Requirements for taking screenshots with iOS devices
+### Requirements for taking screenshots with iOS devices
 
-iOS devices have two requirements if you want to take screenshots. 
+iOS devices have two requirements if you want to take screenshots.
 
-1. Developer mode must be on (instructions below). 
+1. Developer mode must be on (instructions below).
 2. Sherloc must be run in `sudo`, which is the default when using `./sherloc.sh`.
 
 To turn on developer mode:
@@ -99,31 +99,31 @@ To turn on developer mode:
 
 Please see this article for more details on how to turn on developer mode using XCode: https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device.
 
-## Debugging tips 
-If you encounter errors, please file a [GitHub issue](../../issues/) with the server error output. 
-Pull requests are welcome. 
+### Debugging tips
+If you encounter errors, please file a [GitHub issue](../../issues/) with the server error output.
+Pull requests are welcome.
 
-#### Cast iOS Screens or Mirror Android Screens 
+#### Cast iOS Screens or Mirror Android Screens
 It is possible to view your
 device screen(s) in real time on the macOS computer in a new window. This may
 be useful to have while you are running the scan (and especially if you use the
 privacy checkup feature), as it will be easy for you to see the mobile device
 screen(s) in real time on the Mac side-by-side with the scanner.
 
-**How to do it:** 
+**How to do it:**
 You can mirror Android device screens in a new window using
 [scrcpy](https://github.com/Genymobile/scrcpy), and cast iOS device screens on
 macOS with QuickTime 10 (launch it and click File --> New Movie Recording -->
 (on dropdown by red button) the iPhone/iPad name).
 
-## Downloaded data ## 
+### Downloaded data
 The data downloaded and stored in the study are the
 following.  1. A `sqlite` database containing the feedback and actions taken by
 the user.  2. `phone_dump/` folder will have dump of some services in the
 phone.  (For Android I have figured out what are these, for iOS I don't know
 how to get those information.)
 
-##### Android 
+#### Android
 The services that we can dump safely using `dumpsys` are the
 following.
 * Application static details: `package` Sensor and configuration info:
@@ -134,7 +134,7 @@ following.
 
 See details about the services in [notes.md](notes.md)
 
-##### iOS 
+#### iOS
 Only the `appIds`, and their names. Also, I got "permissions" granted
 to the application. I don't know how to get install date, resource usage, etc.
 (Any help will be greatly welcomed.)

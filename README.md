@@ -31,7 +31,7 @@ Install the xcode developer tools if prompted as well.
 
 (Something along the lines of `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)
 
-Then quickly install the project dependencies by running `brew bundle`
+Then quickly install the project dependencies by running `brew bundle` in the sherloc subfolder.
 
 
 ##### Caveats

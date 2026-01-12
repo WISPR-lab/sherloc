@@ -10,51 +10,39 @@ Sherloc is built on [ISDI](https://github.com/stopipv/isdi), which checks Androi
 Right now, Sherloc only natively supports **macOS and Linux**. If you are using a Windows device, you can use the Windows Subsystem for Linux 2
 (WSL2), which can be installed by following [these instructions](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install). After this, follow the remaining instructions as a Linux user would, cloning/running Sherloc inside the Linux container of your choice.
 
-### Python dependencies
-- You will need Python 3.6 or higher (check by running `python3` in your
-You will need Python 3.10 or higher (check by running `python3` in your
-Terminal and see what happens).  On macOS, you can get this by running the
-following commands in your Terminal application:
+### Dependencies
+
+These are written and tested for macOS users. We trust power (Linux) users know how to make the script work.
+
+- Python 3.10 (check your version with `python3 -V`)
+- [adb](https://developer.android.com/studio/releases/platform-tools.html)
+- expect
+- ideviceinstaller
+- wkhtmltopdf requirement
+    - This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
+
+
+#### Steps for macOS users
+
+We rely on Homebrew to install packages on macOS.
+
+Follow the steps in https://brew.sh/ to install the homebrew package manager.
+Install the xcode developer tools if prompted as well.
+
+(Something along the lines of `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)
+
+Then quickly install the project dependencies by running `brew bundle`
+
+
+##### Caveats
+- wkhtmltopdf
+    - If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
+    To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing.
+    Click open anyway and continue installation.
+
+#### Debian family
 
 ```bash
-# Installs developer tools
-xcode-select --install 
-
-# Installs Brew (a software package manager)
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-# Installs Python3.10
-brew install python@3.10
-```
-
-### wkhtmltopdf requirement
-This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
-
-If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
-
-To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing
-
-Click open anyway and continue installation
-
-#### Operating system dependencies
-
-#### Generic
-* [adb](https://developer.android.com/studio/releases/platform-tools.html)
-* expect
-* ideviceinstaller
-
-##### macOS
-On macOS you can quickly install project dependencies with Homebrew by running `brew bundle`.
-
-You can also fulfill the requirements by doing:
-```bash
-brew install --cask android-platform-tools
-brew install expect ideviceinstaller exiftool
-```
-
-##### Debian family
-
-```
 sudo apt install adb expect libimobiledevice-utils ideviceinstaller ifuse
 ```
 

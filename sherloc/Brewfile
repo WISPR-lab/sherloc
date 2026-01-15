@@ -1,3 +1,5 @@
+brew "python@3.10"
+
 # Miscellaneous System Dependencies
 cask "android-platform-tools"
 

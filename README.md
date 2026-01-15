@@ -1,4 +1,4 @@
-# Sherloc 
+# Sherloc
 ### A.K.A. Software to Help with Evidence Retrieval and Log Online Cyberabuse
 
 Sherloc is a tool to support computer security clinics. It is meant to be run by a tech clinic consultant, allowing the consultant to enter findings and investigations. Then, Sherloc enables the consultant to create an evidentiary document synthesizing the consultation.
@@ -8,54 +8,41 @@ Sherloc is built on [ISDI](https://github.com/stopipv/isdi), which checks Androi
 ## Installing Sherloc :computer:
 
 Right now, Sherloc only natively supports **macOS and Linux**. If you are using a Windows device, you can use the Windows Subsystem for Linux 2
-(WSL2), which can be installed by following [these instructions](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install). After this,
-follow the remaining instructions as a Linux user would, cloning/running 
-Sherloc inside the Linux container of your choice. 
+(WSL2), which can be installed by following [these instructions](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install). After this, follow the remaining instructions as a Linux user would, cloning/running Sherloc inside the Linux container of your choice.
 
-### Python dependencies
-- You will need Python 3.6 or higher (check by running `python3` in your
-Terminal and see what happens).  On macOS, you can get this by running the
-following commands in your Terminal application:
+### Dependencies
 
-```bash
-# Installs developer tools
-xcode-select --install 
+These are written and tested for macOS users. We trust power (Linux) users know how to make the script work.
 
-# Installs Brew (a software package manager)
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+- Python 3.10 (check your version with `python3 -V`)
+- [adb](https://developer.android.com/studio/releases/platform-tools.html)
+- expect
+- ideviceinstaller
+- wkhtmltopdf requirement
+    - This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
 
-# Installs Python3.10
-brew install python@3.10
-```
 
-### wkhtmltopdf requirement
-This project uses `wkhtmltopdf` to generate the evidentiary document. The brew cask for `wkhtmltopdf` is deprecated, so you will need to download the appropriate `wkhtmltopdf` binary from the project website: https://wkhtmltopdf.org/downloads.html.
+#### Steps for macOS users
 
-If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
+We rely on Homebrew to install packages on macOS.
 
-To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing
+Follow the steps in https://brew.sh/ to install the homebrew package manager.
+Install the xcode developer tools if prompted as well.
 
-Click open anyway and continue installation
+(Something along the lines of `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`)
 
-### Operating system dependencies
+Then quickly install the project dependencies by running `brew bundle` in the sherloc subfolder.
 
-#### Generic
-* [adb](https://developer.android.com/studio/releases/platform-tools.html)
-* expect
-* ideviceinstaller
 
-#### macOS
-On macOS you can quickly install project dependencies with Homebrew by running `brew bundle`.
-
-You can also fulfill the requirements by doing:
-```bash
-brew install --cask android-platform-tools
-brew install expect ideviceinstaller exiftool
-```
+##### Caveats
+- wkhtmltopdf
+    - If installing on Mac, this error will appear when opening the .pkg file "Apple could not verify “wkhtmltox-0.12.6-2.macos-cocoa.pkg” is free of malware that may harm your Mac or compromise your privacy.”
+    To fix this go to System Settings > Privacy & Security > Security and see the message of the .pkg failing.
+    Click open anyway and continue installation.
 
 #### Debian family
 
-```
+```bash
 sudo apt install adb expect libimobiledevice-utils ideviceinstaller ifuse
 ```
 
@@ -66,7 +53,9 @@ it won't work straightaway. You have to ensure having the *same* version of adb
 start the adb process first in Windows, then in WSL2 (with for example `adb
 devices`).
 
-# Running Sherloc
+---
+
+## Running Sherloc
 
 After Sherloc is installed, run the following command in the terminal (in
 the top-level directory of this repository):
@@ -78,15 +67,15 @@ cd sherloc
 
 There is an optional `--install` flag that installs requirements from `requirements.txt`. However, even without this flag, the script will notice if sherloc fails and install requirements anyway.
 
-Sherloc is run in sudo by default, which is required to take screenshots on iPhones using `pymobiledevice3`. If you do not want to run Sherloc with sudo, please use the `--nosudo` flag when running `./sherloc`. 
+Sherloc is run in sudo by default, which is required to take screenshots on iPhones using `pymobiledevice3`. If you do not want to run Sherloc with sudo, please use the `--nosudo` flag when running `./sherloc`.
 
 Sherloc should open `http://localhost:6200` in the browser.
 
-## Requirements for taking screenshots with iOS devices
+### Requirements for taking screenshots with iOS devices
 
-iOS devices have two requirements if you want to take screenshots. 
+iOS devices have two requirements if you want to take screenshots.
 
-1. Developer mode must be on (instructions below). 
+1. Developer mode must be on (instructions below).
 2. Sherloc must be run in `sudo`, which is the default when using `./sherloc.sh`.
 
 To turn on developer mode:
@@ -98,31 +87,31 @@ To turn on developer mode:
 
 Please see this article for more details on how to turn on developer mode using XCode: https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device.
 
-## Debugging tips 
-If you encounter errors, please file a [GitHub issue](../../issues/) with the server error output. 
-Pull requests are welcome. 
+### Debugging tips
+If you encounter errors, please file a [GitHub issue](../../issues/) with the server error output.
+Pull requests are welcome.
 
-#### Cast iOS Screens or Mirror Android Screens 
+#### Cast iOS Screens or Mirror Android Screens
 It is possible to view your
 device screen(s) in real time on the macOS computer in a new window. This may
 be useful to have while you are running the scan (and especially if you use the
 privacy checkup feature), as it will be easy for you to see the mobile device
 screen(s) in real time on the Mac side-by-side with the scanner.
 
-**How to do it:** 
+**How to do it:**
 You can mirror Android device screens in a new window using
 [scrcpy](https://github.com/Genymobile/scrcpy), and cast iOS device screens on
 macOS with QuickTime 10 (launch it and click File --> New Movie Recording -->
 (on dropdown by red button) the iPhone/iPad name).
 
-## Downloaded data ## 
+### Downloaded data
 The data downloaded and stored in the study are the
 following.  1. A `sqlite` database containing the feedback and actions taken by
 the user.  2. `phone_dump/` folder will have dump of some services in the
 phone.  (For Android I have figured out what are these, for iOS I don't know
 how to get those information.)
 
-##### Android 
+#### Android
 The services that we can dump safely using `dumpsys` are the
 following.
 * Application static details: `package` Sensor and configuration info:
@@ -133,7 +122,7 @@ following.
 
 See details about the services in [notes.md](notes.md)
 
-##### iOS 
+#### iOS
 Only the `appIds`, and their names. Also, I got "permissions" granted
 to the application. I don't know how to get install date, resource usage, etc.
 (Any help will be greatly welcomed.)

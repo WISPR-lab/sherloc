@@ -14,7 +14,7 @@ Sherloc inside the Linux container of your choice.
 
 ### Python dependencies
 - You will need Python 3.6 or higher (check by running `python3` in your
-Terminal and see what happens).  On macOS, you can get this by running the
+Terminal and see what happens). On macOS, you can get this by running the
 following commands in your Terminal application:
 
 ```bash
@@ -139,3 +139,36 @@ See details about the services in [notes.md](notes.md)
 Only the `appIds`, and their names. Also, I got "permissions" granted
 to the application. I don't know how to get install date, resource usage, etc.
 (Any help will be greatly welcomed.)
+
+##### Post PDF generation
+Everything that is required for the Post PDF generation is in the post_pdf directory and below instructions assume that the user in that directory.
+
+Save the PDF in the sherloc_output subfolder.
+
+After saving it, generate a version of PDF with aruco markers. This will rescale the PDF and put aruco markers on the corners. These markers help in aligning the PDF images with the camera images and scale them for comparision.
+
+To generate a version of PDF with aruco markers, go to the code folder and run the generate_aruco_markers.sh script.
+
+Make sure the script is executable 
+```bash
+chmod +x add_aruco_markers.sh
+```
+and run it 
+```bash
+./add_aruco_markers.sh
+```
+This installs all the requirements to generate the PDF with aruco markers and places <report>_marked.pdf in the sherloc_output folder.
+
+Now, print the PDF and take pictures of it with camera/scan and upload the images in camera_images_input folder. Make sure there are numbered correctly in tune with PDF.
+
+Now, run 
+```bash
+./google_ocr_align.sh 
+```
+This will essentially create images of the PDF and store them in clean_pdf_rendered_images folder and then uses aruco markers to rescale and align images from camera_images_input folder into camera_rendered_aligned_images.
+
+It then compares the images in camera_rendered_aligned_images with the images in clean_pdf_rendered_images according to their names and then places the final annoatated image highlighting differences in annotated_difference_images. 
+
+The debug_purpose folder has CSV and text output along with the diff output for debug purposes.
+
+We store the google_ocr_key in google_OCR_key folder. This is needed to call google vision API that is used for OCR.

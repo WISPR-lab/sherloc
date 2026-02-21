@@ -4,8 +4,8 @@ import os
 from web import app
 from web.view.index import get_device
 from flask import render_template, request, session, redirect, url_for
-from phone_scanner import db
-from phone_scanner.db import (
+from isdi.scanner import db
+from isdi.scanner.db import (
     get_client_devices_from_db,
     new_client_id,
     create_scan,
@@ -134,18 +134,13 @@ def scan():
 
     # Finds all the apps in the device
     # @apps have appid, title, flags, TODO: add icon
-    apps = (
-        sc.find_spyapps(serialno=ser, from_dump=from_dump)
-        .fillna("")
-        .to_dict(orient="index")
-    )
+    apps = sc.find_spyapps(serialno=ser, from_dump=from_dump)
     if len(apps) <= 0:
         print("The scanning failed for some reason.")
         error = (
             "The scanning failed. This could be due to many reasons. Try"
             " rerunning the scan from the beginning. If the problem persists,"
-            " please report it in the file. <code>report_failed.md</code> in the<code>"
-            "phone_scanner/</code> directory. Checn the phone manually. Sorry for"
+            " please check the phone manually. Contact support if the issue persists. Sorry for"
             " the inconvenience."
         )
         template_d["error"] = error

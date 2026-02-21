@@ -1,7 +1,7 @@
 from flask import request, session
 import config
 from web import app
-from phone_scanner.db import (
+from isdi.scanner.db import (
     get_serial_from_db,
     save_note,
     update_appinfo,

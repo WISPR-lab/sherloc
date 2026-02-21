@@ -48,7 +48,7 @@ from flask import (
     url_for,
 )
 from flask_bootstrap import Bootstrap
-from phone_scanner import AndroidScan, IosScan
+from isdi.scanner import AndroidScanner as AndroidScan, IosScanner as IosScan
 from web import app
 
 bootstrap = Bootstrap(app)

@@ -98,7 +98,9 @@ class Dictable:
 class DictInitClass(Dictable):
     attrs = []
 
-    def __init__(self, datadict=dict()):
+    def __init__(self, datadict=None):
+        if datadict is None:
+            datadict = dict()
         for k in self.attrs:
             if k in list(datadict.keys()):
                 setattr(self, k, datadict[k])
@@ -110,7 +112,9 @@ class AccountSection(DictInitClass):
     screenshot_label = ""
     attrs = ["account_id"]
 
-    def __init__(self, datadict=dict()):
+    def __init__(self, datadict=None):
+        if datadict is None:
+            datadict = dict()
         super(AccountSection, self).__init__(datadict=datadict)
         self.screenshot_files = list()
         self.screenshot_info = list()
@@ -177,7 +181,9 @@ class PasswordCheck(AccountSection):
     }
     attrs = AccountSection.attrs + list(questions.keys())
 
-    def __init__(self, datadict=dict()):
+    def __init__(self, datadict=None):
+        if datadict is None:
+            datadict = dict()
         super(PasswordCheck, self).__init__(datadict=datadict)
 
     def generate_risk_report(self):
@@ -382,19 +388,29 @@ class AppInfo(Dictable):
                  install_time="",
                  app_version="",
                  last_updated="",
-                 flags=[],
+                 flags=None,
                  application_icon="",
                  app_website="",
                  description="",
                  developerwebsite="",
                  investigate=False,
-                 permission_info=dict(),
-                 permissions=[],
-                 install_info=dict(),
-                 notes=dict(),
+                 permission_info=None,
+                 permissions=None,
+                 install_info=None,
+                 notes=None,
                  device_serial_udid="",
                  **kwargs):
 
+        if flags is None:
+            flags = []
+        if permission_info is None:
+            permission_info = dict()
+        if permissions is None:
+            permissions = []
+        if install_info is None:
+            install_info = dict()
+        if notes is None:
+            notes = dict()
         self.title = title
         self.app_name = app_name
         if self.app_name.strip() == "":
@@ -505,7 +521,9 @@ class Risk(Dictable):
 
 class RiskReport(Dictable):
     def __init__(self,
-                 risk_details=list()):
+                 risk_details=None):
+        if risk_details is None:
+            risk_details = list()
         self.risk_details = risk_details
         self.risk_present = len(risk_details) > 0
 
@@ -713,14 +731,24 @@ class RiskFactor():
 class ConsultationData(Dictable):
 
     def __init__(self,
-                 setup = dict(),
-                 taq = dict(),
-                 accounts = [],
-                 scans = [],
+                 setup = None,
+                 taq = None,
+                 accounts = None,
+                 scans = None,
                  screenshot_dir = "",
-                 notes = dict(),
+                 notes = None,
                  **kwargs):
         # Note: Not used except in printout.
+        if setup is None:
+            setup = dict()
+        if taq is None:
+            taq = dict()
+        if accounts is None:
+            accounts = []
+        if scans is None:
+            scans = []
+        if notes is None:
+            notes = dict()
         self.setup = ConsultSetupData(**setup)
 
         self.taq = TAQData(**taq)
@@ -797,20 +825,32 @@ class AccountInvestigation(Dictable):
                  account_id=0,
                  platform="",
                  username="",
-                 suspicious_logins=dict(),
-                 password_check=dict(),
-                 recovery_settings=dict(),
-                 two_factor_settings=dict(),
-                 security_questions=dict(),
-                 notes=dict(),
+                 suspicious_logins=None,
+                 password_check=None,
+                 recovery_settings=None,
+                 two_factor_settings=None,
+                 security_questions=None,
+                 notes=None,
                  **kwargs):
+        if suspicious_logins is None:
+            suspicious_logins = dict()
+        if password_check is None:
+            password_check = dict()
+        if recovery_settings is None:
+            recovery_settings = dict()
+        if two_factor_settings is None:
+            two_factor_settings = dict()
+        if security_questions is None:
+            security_questions = dict()
+        if notes is None:
+            notes = dict()
         self.account_id = account_id
         self.platform = platform
         self.username = username
 
         # insert account id where needed to get screenshots
-        for dict in [suspicious_logins, recovery_settings, two_factor_settings, security_questions]:
-            dict['account_id'] = account_id
+        for section in [suspicious_logins, recovery_settings, two_factor_settings, security_questions]:
+            section['account_id'] = account_id
         self.suspicious_logins = SuspiciousLogins(suspicious_logins)
         self.password_check = PasswordCheck(password_check)
         self.recovery_settings = RecoverySettings(recovery_settings)
@@ -848,10 +888,14 @@ class ScanData(Dictable):
                  device_manufacturer="",
                  is_rooted="",
                  rooted_reasons="",
-                 all_apps=list(),
-                 selected_apps=list(),
+                 all_apps=None,
+                 selected_apps=None,
                  **kwargs):
 
+        if all_apps is None:
+            all_apps = list()
+        if selected_apps is None:
+            selected_apps = list()
         self.manual = manual
         self.scan_id = scan_id
         self.device_type = device_type
@@ -936,13 +980,25 @@ class TAQData(Dictable):
 
     def __init__(self,
                  marked_done=False,
-                 devices=dict(),
-                 accounts=dict(),
-                 sharing=dict(),
-                 smarthome=dict(),
-                 kids=dict(),
-                 legal=dict(),
+                 devices=None,
+                 accounts=None,
+                 sharing=None,
+                 smarthome=None,
+                 kids=None,
+                 legal=None,
                  **kwargs):
+        if devices is None:
+            devices = dict()
+        if accounts is None:
+            accounts = dict()
+        if sharing is None:
+            sharing = dict()
+        if smarthome is None:
+            smarthome = dict()
+        if kids is None:
+            kids = dict()
+        if legal is None:
+            legal = dict()
         self.marked_done = marked_done
         self.devices = TAQDevices(devices)
         self.accounts = TAQAccounts(accounts)

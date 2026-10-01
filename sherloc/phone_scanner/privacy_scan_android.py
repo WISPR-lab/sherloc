@@ -18,11 +18,11 @@ Finally screen capture.
 
 
 1. Check the Accounts & Sync
-    adb shell am start 'com.android.settings/.Settings\$AccountsGroupSettingsActivity'
+    adb shell am start 'com.android.settings/.Settings\\$AccountsGroupSettingsActivity'
 2. Check the Google Account settings
     adb shell am start 'com.google.android.gms/com.google.android.gms.app.settings.GoogleSettingsLink'
 3. Backup and reset
-    adb shell am start 'com.android.settings/.Settings\$PrivacySettingsActivity'
+    adb shell am start 'com.android.settings/.Settings\\$PrivacySettingsActivity'
 4. Check location sharing settings
     adb shell am start 'com.google.android.apps.maps/com.google.android.maps.MapsActivity' && sleep 5 && adb shell input tap 20 80
 5. Check photo sharing settings
@@ -188,7 +188,7 @@ def do_privacy_check(ser, command, context):
             "<em>account email address</em> at the top."
         )
     elif command == "backup":  # 2. Backup & reset
-        open_activity(ser, "com.android.settings/.Settings\$PrivacySettingsActivity")
+        open_activity(ser, r"com.android.settings/.Settings\$PrivacySettingsActivity")
         # wait(2)
         # keycode(ser, 'home')
         # take_screenshot(ser, 'account.png')
@@ -217,7 +217,7 @@ def do_privacy_check(ser, command, context):
         )
     elif command == "sync":
         if not open_activity(
-            ser, "com.android.settings/.Settings\$AccountsGroupSettingsActivity"
+            ser, r"com.android.settings/.Settings\$AccountsGroupSettingsActivity"
         ):
             return (
                 "I could not find syncing functionality in your Android. This most likely mean this is not available, "

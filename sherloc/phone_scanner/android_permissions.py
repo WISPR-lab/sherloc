@@ -21,7 +21,7 @@ def _parse_time(time_str):
     Modified from virhilo's answer at https://stackoverflow.com/a/4628148/851699
     :param time_str: A string identifying a duration.  (eg. 2h13m)
     :return datetime.timedelta: A datetime.timedelta object
-        r'^+((?P<days>[\\.\d]+?)d)?((?P<hours>[\.\d]+?)h)?((?P<minutes>[\.\d]+?)m)?((?P<seconds>[\.\d]+?)s)?((?P<milliseconds>[\\.\d]+?)ms)?')
+        r'^+((?P<days>[\\.\\d]+?)d)?((?P<hours>[\\.\\d]+?)h)?((?P<minutes>[\\.\\d]+?)m)?((?P<seconds>[\\.\\d]+?)s)?((?P<milliseconds>[\\.\\d]+?)ms)?')
     """
     timedelta_re = re.compile(
         r"^.((?P<days>[\.\d]+?)d)?((?P<hours>[\.\d]+?)h)?((?P<minutes>[\.\d]+?)m)?((?P<seconds>[\.\d]+?)s)?((?P<milliseconds>[\.\d]+?)ms)?"
@@ -98,7 +98,7 @@ def package_info(dumpf, appid):
     # install permissions:
     # runtime permissions:
     # This just uses bash to parse something we already have in the dump?
-    cmd = "sed -n -e '/Package \\[{appid}\]/,/Package \\[/p' '{dumpf}'".format(
+    cmd = "sed -n -e '/Package \\[{appid}\\]/,/Package \\[/p' '{dumpf}'".format(
         appid=appid, dumpf=dumpf.replace(".json", ".txt")
     )
     # TODO: Need to udpate it once the catch_err function is fixed.

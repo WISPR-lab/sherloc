@@ -1,10 +1,4 @@
 {
-  "sherloc/evidence_collection.py::B006": 28,
-  "sherloc/phone_scanner/android_permissions.py::W605": 9,
-  "sherloc/phone_scanner/blocklist.py::B006": 2,
   "sherloc/phone_scanner/privacy_scan_android.py::S602": 1,
-  "sherloc/phone_scanner/privacy_scan_android.py::W605": 4,
-  "sherloc/phone_scanner/runcmd.py::S602": 1,
-  "sherloc/web/view/scan.py::E722": 1,
-  "tests/android_perms.py::W605": 2
+  "sherloc/phone_scanner/runcmd.py::S602": 1
 }

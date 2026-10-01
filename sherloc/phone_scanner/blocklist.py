@@ -30,8 +30,8 @@ try:
         }
     )
 except FileNotFoundError as e:
-    print(f"I can't find the blocklist file: {config.APP_FLAGS_FILE!r}.")
-    exit(0)
+    # Exit with an error: a missing blocklist must not look like success.
+    raise SystemExit(f"I can't find the blocklist file: {config.APP_FLAGS_FILE!r}.")
 
 APP_FLAGS = APP_FLAGS[
     APP_FLAGS.flag.isin({"dual-use", "spyware", "co-occurrence"})
@@ -133,8 +133,12 @@ def store_str(st):
         return "offstore"
 
 
-def app_title_and_flag(apps, offstore_apps=[], system_apps=[]):
+def app_title_and_flag(apps, offstore_apps=None, system_apps=None):
     """Gets app flags and title from app-flags.csv file."""
+    if offstore_apps is None:
+        offstore_apps = []
+    if system_apps is None:
+        system_apps = []
     # print(apps)
     print("Size of app-flags: {}".format(len(APP_FLAGS)))
     _td = dedup_app_flags(apps.merge(APP_FLAGS, on="appId", how="left")).set_index(

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from time import strftime
 import logging
+import os
 import config
 from flask import Flask, g, session, request
 from flask_sqlalchemy import model, SQLAlchemy
@@ -9,7 +10,8 @@ from web.security import register_request_guards
 
 app = Flask(__name__, static_folder="../webstatic", template_folder="../templates/")
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQL_DB_PATH
-app.config["SQLALCHEMY_ECHO"] = True
+# Echoed statements include client notes and device serials.
+app.config["SQLALCHEMY_ECHO"] = bool(int(os.getenv("SHERLOC_SQL_ECHO", "0")))
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = config.FLASK_SECRET  # doesn't seem to be necessary
 app.config["SECRET_KEY"] = config.FLASK_SECRET  # doesn't seem to be necessary

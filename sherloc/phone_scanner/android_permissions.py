@@ -182,15 +182,6 @@ def package_info(dumpf, appid):
         return [], {}
 
 
-def gather_permissions_labels():
-    # FIXME: would probably put in global db?
-    cmd = "{cli} shell getprop ro.product.model"
-    model = catch_err(run_command(cmd, outf=MAP)).strip().replace(" ", "_")
-    cmd = "{cli} shell pm list permissions -g -f > {outf}"
-    # perms = catch_err(run_command(cmd, outf=model+'.permissions'))
-    perms = catch_err(run_command(cmd, outf="static_data/android_permissions.txt"))
-
-
 def permissions_map():
     groupcols = ["group", "group_package", "group_label", "group_description"]
     pcols = ["permission", "package", "label", "description", "protectionLevel"]

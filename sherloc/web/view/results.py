@@ -56,12 +56,4 @@ def view_results():
   ))
   """
 
-    if scan_res_pk == last_serial:
-        print("Should return same template as before.")
-        print("scan_res:  {}".format(scan_res_pk))
-        print("last_serial: {}".format(last_serial))
-    else:
-        print("Should return results of scan_res.")
-        print("scan_res: {}".format(scan_res_pk))
-        print("last_serial: {}".format(last_serial))
     return redirect(url_for("index"))

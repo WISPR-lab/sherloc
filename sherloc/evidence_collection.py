@@ -13,6 +13,7 @@ import json
 import os
 import re
 import shutil
+import sqlite3
 import subprocess
 from enum import Enum
 from pathlib import Path
@@ -1740,6 +1741,40 @@ def load_object_from_json(datatype: ConsultDataTypes):
 
     return None
 
+def wipe_client_database():
+    """Remove every row of client data from the SQLite database.
+
+    The schema stays so the app keeps working. Deleted content is overwritten
+    (secure_delete) and the file is rewritten (VACUUM), so it cannot be
+    recovered from free pages. Does nothing when the database does not exist.
+    """
+    path = config.SQL_DB_PATH.replace("sqlite:///", "", 1)
+    if not os.path.exists(path):
+        return
+
+    con = sqlite3.connect(path)
+    try:
+        con.execute("PRAGMA secure_delete = ON")
+        tables = [
+            r[0]
+            for r in con.execute(
+                "select name from sqlite_master where type = 'table' "
+                "and name not like 'sqlite_%' and name != 'alembic_version'"
+            )
+        ]
+        with con:
+            for table in tables:
+                con.execute('delete from "{}"'.format(table.replace('"', '""')))
+            if con.execute(
+                "select 1 from sqlite_master where name = 'sqlite_sequence'"
+            ).fetchone():
+                con.execute("delete from sqlite_sequence")
+        con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        con.execute("VACUUM")
+    finally:
+        con.close()
+
+
 def delete_client_data():
 
     # Delete the consult data stored as json
@@ -1766,6 +1801,10 @@ def delete_client_data():
     print(REPORT_DIR)
     shutil.rmtree(REPORT_DIR)
     os.makedirs(REPORT_DIR, exist_ok=True)
+
+    # Delete everything stored in the database
+    print("Deleting database records...")
+    wipe_client_database()
 
     print("Client data deleted.")
 

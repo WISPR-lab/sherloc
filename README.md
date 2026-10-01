@@ -71,6 +71,8 @@ Sherloc is run in sudo by default, which is required to take screenshots on iPho
 
 Sherloc should open `http://localhost:6200` in the browser.
 
+Sherloc has no login and handles sensitive evidence, so it only listens on `127.0.0.1`. Requests whose `Host` header is not `localhost`, `127.0.0.1`, or `::1` are rejected. To serve it on another address, set `SHERLOC_HOST` (for example `0.0.0.0`) and list the host names clients will use in `SHERLOC_ALLOWED_HOSTS` (comma separated). Only do this on a network you trust.
+
 ### Requirements for taking screenshots with iOS devices
 
 iOS devices have two requirements if you want to take screenshots.

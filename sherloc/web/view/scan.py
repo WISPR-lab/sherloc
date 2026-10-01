@@ -1,6 +1,7 @@
 import json
 import config
 import os
+from inputcheck import validate_serial
 from web import app
 from web.view.index import get_device
 from flask import render_template, request, session, redirect, url_for
@@ -36,12 +37,17 @@ def scan():
     action = get_param("action")
     device_owner = get_param("device_owner")
     ser = get_param("devid")
+    if ser:
+        try:
+            validate_serial(ser)
+        except ValueError:
+            return "Invalid device serial.", 400
     t_from_dump = get_param("from_dump")
     from_dump = False
     if t_from_dump:
         try:
             from_dump = int(t_from_dump)
-        except:
+        except ValueError:
             from_dump = False
 
     currently_scanned = get_client_devices_from_db(session["clientid"])
@@ -77,6 +83,12 @@ def scan():
 
     if not ser:
         ser = first_element_or_none(sc.devices())
+    if ser:
+        try:
+            validate_serial(ser)
+        except ValueError:
+            template_d["error"] = "The device reported a serial number that Sherloc cannot use."
+            return render_template("main.html", **template_d), 201
 
     print("Devices: {}".format(ser))
     if not ser:

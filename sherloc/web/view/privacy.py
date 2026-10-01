@@ -3,7 +3,6 @@ import hmac
 import os
 import random
 import re
-import shlex
 import sqlite3
 import subprocess
 import sys
@@ -14,6 +13,7 @@ from datetime import datetime
 from flask import render_template, request, url_for
 
 import config
+from inputcheck import validate_path_part, validate_serial
 
 #from phone_scanner import iosScreenshot
 from phone_scanner.privacy_scan_android import do_privacy_check, take_screenshot
@@ -37,6 +37,11 @@ def privacy():
 
 @app.route("/privacy/<device>/<cmd>/<context>/<ser>", methods=["GET"])
 def privacy_scan(device, cmd, context, ser):
+    try:
+        validate_serial(ser)
+        validate_path_part(context.replace(" ", ""), "screenshot context")
+    except ValueError:
+        return "Invalid request.", 400
     print(ser)
     if device == "ios":
         res = iosScreenshot(ser, context, nocache=True)
@@ -45,34 +50,47 @@ def privacy_scan(device, cmd, context, ser):
     print("Screenshot Taken")
     return res
 
+def _read_rsd(lines):
+    """Return (address, port) from `pymobiledevice3 lockdown start-tunnel` output."""
+    address = port = ""
+    for raw in lines:
+        line = raw.decode("utf-8", errors="replace").strip()
+        print(line)
+        if line.startswith("RSD Address:"):
+            address = line.split(":", 1)[1].strip()
+        elif line.startswith("RSD Port:"):
+            port = line.split(":", 1)[1].strip()
+        if address and port:
+            break
+    return address, port
+
+
 def iosScreenshot(ser, context, nocache = False):
     fname = config.create_screenshot_fname(context, ser)
-    linkPro = subprocess.Popen(["pymobiledevice3", "lockdown", "start-tunnel"], stdout= subprocess.PIPE)
-    time.sleep(2)
-    output = linkPro.stdout
-    rsdAddress = ""
-    rsdPort = ""
-    i = 0
-    for lineByte in output:
-        line = lineByte.decode('utf-8')
-        print(line)
-        if i == 6:
-            break
-        if "RSD Address" in line:
-            rsdAddress = line[13:]
-        if "RSD Port" in line:
-            lineSplit = line.split(":")
-            rsdPort = lineSplit[1][1:]
-        i += 1
-    command = "pymobiledevice3 developer dvt screenshot " + fname + " --rsd " + rsdAddress + " " + rsdPort
-
+    tunnel = subprocess.Popen(["pymobiledevice3", "lockdown", "start-tunnel"], stdout=subprocess.PIPE)
     try:
-        subprocess.run(shlex.split(command), check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Command failed with exit code {e.returncode}: {e.output}")
-        return "<div class='screenshotfail'>Screenshot failed with exit code {}</div>".format(e.returncode)
-    except Exception as e:
-        print(e)
-        return "<div class='screenshotfail'>Screenshot failed with exception {}</div>".format(e)
+        time.sleep(2)
+        rsdAddress, rsdPort = _read_rsd(tunnel.stdout)
+        if not (rsdAddress and rsdPort):
+            return "<div class='screenshotfail'>Screenshot failed: could not open a tunnel to the device</div>"
+
+        # A list, not a string split on spaces: the file name can contain spaces.
+        command = ["pymobiledevice3", "developer", "dvt", "screenshot", fname,
+                   "--rsd", rsdAddress, rsdPort]
+        try:
+            subprocess.run(command, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Command failed with exit code {e.returncode}: {e.output}")
+            return "<div class='screenshotfail'>Screenshot failed with exit code {}</div>".format(e.returncode)
+        except Exception as e:
+            print(e)
+            return "<div class='screenshotfail'>Screenshot failed with exception {}</div>".format(e)
+    finally:
+        # The tunnel keeps running until it is stopped.
+        tunnel.terminate()
+        try:
+            tunnel.wait(timeout=5)
+        except Exception:
+            tunnel.kill()
 
     return "<img height='400px' src='" + url_for('static', filename=fname.split("webstatic/", 1)[-1]) + "'/>"

@@ -17,6 +17,7 @@ import pandas as pd
 from . import blocklist, parse_dump
 from .android_permissions import all_permissions
 from .runcmd import catch_err, run_command
+from inputcheck import validate_appid, validate_serial
 
 
 class AppScan(object):
@@ -272,9 +273,10 @@ class AndroidScan(AppScan):
         Returns the list of installed packages.
         """
 
+        validate_serial(serialno)
         cmd = "{cli} -s {serial} shell pm list packages {flag} | sed 's/^package://g' | sort"
         s = catch_err(
-            run_command(cmd, serial=serialno, flag=flag),
+            run_command(cmd, serial=shlex.quote(serialno), flag=flag),
             msg="App search failed",
             cmd=cmd,
         )
@@ -301,6 +303,7 @@ class AndroidScan(AppScan):
     def get_apps(self, serialno: str, from_dump: bool = False) -> list:
         """Returns the list of installed apps on the device."""
 
+        validate_serial(serialno)
         print(f"Getting Android apps: {serialno} from_dump={from_dump}")
         hmac_serial = config.hmac_serial(serialno)
         if not from_dump:
@@ -312,7 +315,7 @@ class AndroidScan(AppScan):
             if installed_apps:
                 q = run_command(
                     "bash scripts/android_scan.sh scan {ser} {hmac_serial}",
-                    ser=serialno,
+                    ser=shlex.quote(serialno),
                     hmac_serial=hmac_serial,
                     nowait=True,
                 )
@@ -373,6 +376,13 @@ class AndroidScan(AppScan):
             device, state = rc.split()
             device = device.strip()
             if state.strip() == "device":
+                try:
+                    validate_serial(device)
+                except ValueError:
+                    # The serial is reported by the device. Do not use one
+                    # that could not be passed safely to a command.
+                    print("Ignoring a device with an unusable serial number.")
+                    continue
                 conn_devices.append(device)
         return conn_devices
 
@@ -381,6 +391,8 @@ class AndroidScan(AppScan):
     #     return run_command(cmd).stdout.read().decode('utf-8')
 
     def device_info(self, serial):
+        validate_serial(serial)
+        serial = shlex.quote(serial)
         m = {}
         cmd = "{cli} -s {serial} shell getprop ro.product.brand"
         m["brand"] = (
@@ -415,9 +427,15 @@ class AndroidScan(AppScan):
     #     print("Dump success! Written to={}".format(outfname))
 
     def uninstall(self, serial, appid):
-        cmd = "{cli} uninstall {appid!r}"
+        validate_appid(appid)
+        validate_serial(serial)
+        # `{appid!r}` here would wrap the quoted value in double quotes, which
+        # re-enables $(...) expansion. Use the shlex-quoted value as is.
+        # `-s` targets the device that was scanned; without it adb refuses to
+        # run when more than one device is attached.
+        cmd = "{cli} -s {serial} uninstall {appid}"
         s = catch_err(
-            run_command(cmd, appid=shlex.quote(appid)),
+            run_command(cmd, serial=shlex.quote(serial), appid=shlex.quote(appid)),
             cmd=cmd,
             msg="Could not uninstall",
         )
@@ -498,6 +516,7 @@ class AndroidScan(AppScan):
         Doesn't return all reasons by default. First match will return.
         TODO: make consistent with iOS isrooted, which returns all reasons discovered.
         """
+        validate_serial(serial)
         # FIXME: load these from a private database instead.  from OWASP,
         # https://sushi2k.gitbooks.io/the-owasp-mobile-security-testing-guide/content/0x05j-Testing-Resiliency-Against-Reverse-Engineering.html
 
@@ -600,6 +619,10 @@ class IosScan(AppScan):
     def devices(self):
         def _is_device(x):
             """Is it looks like a serial number"""
+            try:
+                validate_serial(x)
+            except ValueError:
+                return False
             return re.match(r"[a-f0-9]+", x) is not None
 
         # cmd = '{cli} --detect -t1 | tail -n 1'
@@ -662,8 +685,16 @@ class IosScan(AppScan):
     def uninstall(self, serial, appid):
         # cmd = '{cli} -i {serial} --uninstall_only --bundle_id {appid!r}'
         # cmd = 'ideviceinstaller --udid {} --uninstall {appid!r}'.format(serial, appid)
-        cmd = f"{self.cli}ideviceinstaller --uninstall {appid!r}"
-        s = catch_err(run_command(cmd, appid=appid), cmd=cmd, msg="Could not uninstall")
+        validate_appid(appid)
+        validate_serial(serial)
+        # The command is built here and not formatted again, so no braces in
+        # the template can be interpreted by run_command. `--udid` targets
+        # the device that was scanned.
+        cmd = (
+            f"{self.cli}ideviceinstaller --udid {shlex.quote(serial)} "
+            f"--uninstall {shlex.quote(appid)}"
+        )
+        s = catch_err(run_command(cmd), cmd=cmd, msg="Could not uninstall")
         return s != -1
 
     def isrooted(self, serial):

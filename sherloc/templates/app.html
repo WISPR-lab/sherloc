@@ -28,14 +28,14 @@
         </ul>
 	<!-- label class="btn btn-danger">
 	     <button type="button" class="btn btn-danger"
-	     onclick="delete_app('{{ app.appId }}', this)" disabled>Delete</button>
+	     onclick='delete_app({{ app.appId|tojson }}, this)' disabled>Delete</button>
 	     </label -->
     </div>
 
     <div class="jumbotron" style="padding: 1em">
         <h3>{% if device=="android" %} Google Play Store {% endif %} {% if device=="ios" %} Apple App Store {% endif %} Description of the app</h3>
-        <span style="margin-bottom: 2em; display:block"><mark><b>{{ app.summary|safe }}</b></mark></span>
-        {{ app.descriptionHTML|safe }}
+        <span style="margin-bottom: 2em; display:block"><mark><b>{{ app.summary|clean_html|safe }}</b></mark></span>
+        {{ app.descriptionHTML|clean_html|safe }}
     </div>
     
     {% if device=="android" %} 

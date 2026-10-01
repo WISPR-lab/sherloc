@@ -1,5 +1,6 @@
 from flask import request, session
 import config
+from inputcheck import validate_appid, validate_serial
 from web import app
 from phone_scanner.db import (
     get_serial_from_db,
@@ -34,12 +35,25 @@ def record_scanres(scanid):
     )
 
 
-@app.route("/delete/app/<scanid>", methods=["POST", "GET"])
+@app.route("/delete/app/<scanid>", methods=["POST"])
 def delete_app(scanid):
-    device = get_device_from_db(scanid)
-    serial = get_serial_from_db(scanid)
-    sc = get_device(device)
     appid = request.form.get("appid")
+    try:
+        validate_appid(appid)
+    except ValueError:
+        return "Invalid app id.", 400
+    device = get_device_from_db(scanid)
+    # The database only holds the pseudonymized serial, so the real serial
+    # comes from the page. It is accepted only if it is the device that this
+    # scan was made on.
+    serial = request.form.get("serial", "")
+    try:
+        validate_serial(serial)
+    except ValueError:
+        return "Invalid device serial.", 400
+    if serial.startswith("HSN_") or config.hmac_serial(serial) != get_serial_from_db(scanid):
+        return "That device is not the one this scan was made on.", 400
+    sc = get_device(device)
     remark = request.form.get("remark")
     action = "delete"
     # TODO: Record the uninstall and note

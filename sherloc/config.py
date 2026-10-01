@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from sys import platform
 
+from inputcheck import validate_path_part
+
 SHERLOC_VERSION = "1.1.4"
 
 def setup_logger():
@@ -45,6 +47,16 @@ spyware_list_file = "static_data/spyware.csv"  # hand picked
 # ---------------------------------------------------------
 DEBUG = bool(int(os.getenv("DEBUG", "0")))
 TEST = bool(int(os.getenv("TEST", "0")))
+
+# The app handles sensitive evidence and has no login, so it listens on the
+# loopback interface only. Set SHERLOC_HOST to change that, and list the host
+# names clients will use in SHERLOC_ALLOWED_HOSTS (comma separated).
+HOST = os.getenv("SHERLOC_HOST", "127.0.0.1")
+ALLOWED_HOSTS = {"localhost", "127.0.0.1", "::1"} | {
+    h.strip().lower()
+    for h in os.getenv("SHERLOC_ALLOWED_HOSTS", "").split(",")
+    if h.strip()
+}
 
 DEVICE_PRIMARY_USER = {
     "me": "Me",
@@ -143,38 +155,70 @@ APPROVED_INSTALLERS = {"com.android.vending",
 REPORT_PATH = THIS_DIR / "reports"
 PII_KEY_PATH = STATIC_DATA / "pii.key"
 
+# SHA-256 of key files that were committed to the public repository before
+# they were untracked. Anyone can read those values, so a key file that still
+# holds one of them is replaced. Only hashes are kept here.
+KNOWN_PUBLIC_KEY_SHA256 = {
+    "d6ad5dae593a9e058698c0ffc2f4da9c865d1a0e1ed09c9246dd446eb1304e86",  # pii.key
+    "eb7e855e3840deca9c4a9882e8a124e44c098f82a670aec10c0b7ea23ad4c6ea",  # flask.secret
+}
+
 
 def open_or_create_random_key(fpath, keylen=32):
     """
-    Opens the file at the given path or creates a new file with a random key of the specified length.
+    Returns the key stored at `fpath`, creating it first if needed.
+
+    The key is replaced when the file is missing, has the wrong length, or holds
+    a value that was once committed to the public repository. New files are
+    readable by the owner only.
 
     Args:
-        fpath (str): The path to the file.
+        fpath (str or Path): The path to the file.
         keylen (int, optional): The length of the random key. Defaults to 32.
 
     Returns:
-        bytes: The contents of the file as bytes.
+        bytes: The key.
     """
+    fpath = Path(fpath)
 
-    def create():
-        with fpath.open("wb") as f:
-            f.write(secrets.token_bytes(keylen))
+    if fpath.exists():
+        key = fpath.read_bytes()
+        if (
+            len(key) == keylen
+            and hashlib.sha256(key).hexdigest() not in KNOWN_PUBLIC_KEY_SHA256
+        ):
+            return key
 
-    if not fpath.exists():
-        create()
-    k = fpath.open("rb").read(keylen)
-    if len(k) != keylen:
-        create()
-    return fpath.open("rb").read()
+    key = secrets.token_bytes(keylen)
+    fd = os.open(fpath, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "wb") as f:
+        f.write(key)
+    return key
 
-
-PII_KEY = open_or_create_random_key(PII_KEY_PATH, keylen=32)
 
 FLASK_SECRET_PATH = STATIC_DATA / "flask.secret"
-FLASK_SECRET = open_or_create_random_key(FLASK_SECRET_PATH)
 
-if not REPORT_PATH.exists():
-    os.mkdir(REPORT_PATH)
+# Keys are created on first use, not when this module is imported, so scripts
+# and tests that only read a setting do not write key files.
+_LAZY_KEYS = {
+    "PII_KEY": lambda: open_or_create_random_key(PII_KEY_PATH, keylen=32),
+    "FLASK_SECRET": lambda: open_or_create_random_key(FLASK_SECRET_PATH),
+}
+_key_cache = {}
+
+
+def __getattr__(name):
+    """Module attribute hook (PEP 562): PII_KEY and FLASK_SECRET."""
+    if name in _LAZY_KEYS:
+        if name not in _key_cache:
+            _key_cache[name] = _LAZY_KEYS[name]()
+        return _key_cache[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def ensure_dirs():
+    """Create the folders the app writes to. Called when the app starts."""
+    REPORT_PATH.mkdir(exist_ok=True)
 
 
 def hmac_serial(ser: str) -> str:
@@ -182,7 +226,7 @@ def hmac_serial(ser: str) -> str:
     it returns the same value."""
     if ser.startswith("HSN_"):
         return ser
-    hser = hmac.new(PII_KEY, ser.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
+    hser = hmac.new(__getattr__("PII_KEY"), ser.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
     return f"HSN_{hser}"
 
 
@@ -203,9 +247,18 @@ def error():
     return e.replace("\n", "<br/>")
 
 def create_screenshot_fname(context, serial="misc"):
-    # Verify the directory exists and create it if not
-    subfolder = context.replace(" ", "")
-    dir_path = os.path.join(THIS_DIR, "webstatic", "images", "screenshots", serial, subfolder)
+    """Return a new screenshot path, creating its directory.
+
+    `context` and `serial` can come from a URL, so each must be a single safe
+    path component and the result must stay inside the screenshots directory.
+    """
+    subfolder = validate_path_part(context.replace(" ", ""), "screenshot context")
+    serial = validate_path_part(serial, "serial")
+
+    root = os.path.realpath(os.path.join(THIS_DIR, "webstatic", "images", "screenshots"))
+    dir_path = os.path.realpath(os.path.join(root, serial, subfolder))
+    if os.path.commonpath([root, dir_path]) != root:
+        raise ValueError("Invalid screenshot location.")
     os.makedirs(dir_path, exist_ok=True)
 
     # Create a filename with the current time and context

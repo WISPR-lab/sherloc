@@ -2,15 +2,22 @@
 """
 The mainfile of ISDi repo.
 """
+import os
+import sys
 import webbrowser
 from threading import Timer
 
-import config
+from runmode import apply_cli_mode
+
+# Must run before `config` is imported: config reads TEST at import time.
+apply_cli_mode(sys.argv, os.environ)
+
+import config  # noqa: E402
 from phone_scanner import db
 from web import app, sa
 
 PORT = 6200 if not (config.TEST or config.DEBUG) else 6202
-HOST = "127.0.0.1" if config.DEBUG else "0.0.0.0"
+HOST = config.HOST
 
 def open_browser():
     """Opens a browser to make it easy to navigate to ISDi
@@ -20,13 +27,10 @@ def open_browser():
 
 
 if __name__ == "__main__":
-    import sys
-    if 'TEST' in sys.argv[1:] or 'test' in sys.argv[1:]:
+    if config.TEST:
         print("Running in test mode.")
-        config.set_test_mode(True)
-        print(f"Checking mode = {config.TEST}\n"
-              "App flags: {config.APP_FLAGS_FILE}\n"
-              "SQL_DB: {config.SQL_DB_PATH}")
+        print(f"App flags: {config.APP_FLAGS_FILE}\n"
+              f"SQL_DB: {config.SQL_DB_PATH}")
 
     print(f"TEST={config.TEST}")
     db.init_db(app, sa, force=config.TEST)

@@ -12,6 +12,40 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
+## [Unreleased]
+
+### Changed
+- Importing `config` no longer creates key files or folders. The keys are created on first use and the reports folder when the app starts. Scripts and tests that only read a setting no longer write into `static_data`
+- Sherloc listens on 127.0.0.1 by default. Set `SHERLOC_HOST` and `SHERLOC_ALLOWED_HOSTS` to serve it elsewhere
+- `pytest` runs from the repository root
+- `evidence_collection.py` (1,900 lines) is split into `evidence_choices.py`, `evidence_model.py` and `evidence_forms.py`. It re-exports every name it had, so existing imports work, and `tests/test_evidence_collection_api.py` fails if one goes missing
+- CI runs the test suite on pushes and pull requests. A lint ratchet (`tests/test_lint_ratchet.py`) fails on any new undefined name, invalid escape, mutable default argument, bare `except`, `shell=True` or `eval`; existing findings are recorded in `tests/lint_baseline.json`
+- The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
+- super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
+### Fixed
+- "Delete client data" stopped at the first missing folder (for example before any scan) and never reached the database. Each folder is now handled independently
+- `python main.py test` did nothing: the call to `set_test_mode` discarded its result, and by then the paths had already been read. The `test` argument is now applied before `config` is imported
+- A missing blocklist file made the app exit with status 0 and a one-line message. It now exits with an error
+- 30 function arguments defaulted to a shared `list()`/`dict()`; each call now gets its own. Invalid escape sequences in 15 string literals are now raw strings (same values). A bare `except` in `/scan` is now `except ValueError`
+- Android and iOS uninstall now target the scanned device (`adb -s`, `ideviceinstaller --udid`). Before, adb refused to run with more than one device attached. `delete_app` only accepts a serial that matches the scan
+- iOS screenshots no longer break when the install path contains a space, and the `pymobiledevice3` tunnel process is stopped after each screenshot instead of being left running
+- "Close App and End Session" never worked: it relied on `werkzeug.server.shutdown`, which Werkzeug 2.1+ removed. It now stops the app after sending its response
+- `/view_results` raised a `NameError` for any existing scan. Removed unreachable or uncalled code that used undefined names (`index.py`, `android_permissions.py`, and `update_app_deleteinfo` in `db.py`, which also had an SQL typo). The lint check now fails on undefined names
+### Security
+- Request log lines show the route pattern instead of the URL, so device serials and app ids no longer appear in the terminal output
+- Deleting client data, deleting a scan or account, and closing the app now require POST. A GET (an image tag, a link prefetch) could trigger them. The buttons are now forms
+- App descriptions from the app-store crawls are reduced to a few formatting tags before rendering. They were inserted unescaped, so a published app could run script in the consultant's browser
+- `/details/app` validates the app id and serial, and returns 404 for an unknown device
+- App ids are passed to the delete-app handler as JSON, not pasted into a JavaScript string
+- Deleting client data now also empties the database (client notes, scans and app remarks). Before, only files were deleted and the notes stayed in `fieldstudy.db`. Deleted content is overwritten and the file is compacted
+- SQL statements are no longer echoed to the log (they included client notes and serials). Set `SHERLOC_SQL_ECHO=1` to turn echo back on for debugging
+- Device serials and app ids are validated before they reach a shell command. Previously a crafted serial or app id, or a serial reported by a device, could run commands
+- Fixed quoting in the Android and iOS uninstall commands that made `shlex.quote` ineffective
+- Screenshot paths are limited to the screenshots directory
+- Requests with a foreign `Host` header, a cross-origin `Origin` on state-changing methods, or a non-same-origin `Sec-Fetch-Site` are rejected, so another website cannot trigger scans, uninstalls, or data deletion
+- `sherloc/static_data/pii.key` and `flask.secret` are no longer tracked by git and are ignored. Both files were public, so anyone could compute the `HSN_` device identifiers and forge session cookies. Keys are generated on first run with owner-only (0600) permissions, and a key file that still holds one of the previously published values is replaced. Existing installs get new keys after pulling, so stored `HSN_` identifiers will change. The old values remain in git history
+- The PDF printout escapes notes, names and app text, and wkhtmltopdf no longer has local file access. Previously a note containing an `<iframe src="file://...">` tag put the contents of a local file into the report
+
 ## [v1.1.4] - November 4, 2025
 
 ### Added     

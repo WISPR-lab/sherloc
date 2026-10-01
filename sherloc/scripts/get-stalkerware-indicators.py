@@ -28,7 +28,7 @@ def requirements():
 # check requirements
 if not requirements():
     print("Requirements not met. Exiting...")
-    exit()
+    sys.exit(1)
 
 # parse ioc.yaml
 ioc = {}

@@ -18,11 +18,11 @@ Finally screen capture.
 
 
 1. Check the Accounts & Sync
-    adb shell am start 'com.android.settings/.Settings\$AccountsGroupSettingsActivity'
+    adb shell am start 'com.android.settings/.Settings\\$AccountsGroupSettingsActivity'
 2. Check the Google Account settings
     adb shell am start 'com.google.android.gms/com.google.android.gms.app.settings.GoogleSettingsLink'
 3. Backup and reset
-    adb shell am start 'com.android.settings/.Settings\$PrivacySettingsActivity'
+    adb shell am start 'com.android.settings/.Settings\\$PrivacySettingsActivity'
 4. Check location sharing settings
     adb shell am start 'com.google.android.apps.maps/com.google.android.maps.MapsActivity' && sleep 5 && adb shell input tap 20 80
 5. Check photo sharing settings
@@ -41,10 +41,15 @@ from subprocess import PIPE, Popen, TimeoutExpired
 from flask import url_for
 
 import config
+from inputcheck import validate_serial
 
 adb = config.ADB_PATH
 
-def run_command(cmd, **kwargs):
+def run_capture(cmd, **kwargs):
+    """Run a command and return (stdout, stderr) as text.
+
+    Not the same as `runcmd.run_command`, which returns the process.
+    """
     _cmd = cmd.format(**kwargs)
     print(_cmd)
     try:
@@ -62,15 +67,15 @@ def run_command(cmd, **kwargs):
 
 
 def thiscli(ser):
-    if ser:
-        return "{adb} -s {ser}".format(adb=adb, ser=ser)
-    else:
+    """Return the adb command prefix. `None` means the default device."""
+    if ser is None:
         return "{adb}".format(adb=adb)
+    return "{adb} -s {ser}".format(adb=adb, ser=shlex.quote(validate_serial(ser)))
 
 
 def get_screen_res(ser):
     cmd = "{cli} shell dumpsys window | grep 'mUnrestrictedScreen'"
-    out, err = run_command(cmd, cli=thiscli(ser))
+    out, err = run_capture(cmd, cli=thiscli(ser))
     m = re.match(r"mUnrestrictedScreen=\(0,0\) (?P<w>\d+)x(?P<h>\d+)", out.strip())
     if m:
         return int(m.group("w")), int(m.group("h"))
@@ -83,7 +88,7 @@ def open_activity(ser, activity_name):
     Opens an activity
     """
     cmd = "{cli} shell am start '{act}'"
-    out, err = run_command(cmd, cli=thiscli(ser), act=activity_name)
+    out, err = run_capture(cmd, cli=thiscli(ser), act=activity_name)
     if err:
         print("ERROR (open_activity): {!r}".format(err))
         return False
@@ -101,7 +106,7 @@ def tap(ser, xpercent, ypercent):
     x = int(xpercent * w / 100)
     y = int(ypercent * h / 100)
     cmd = "{cli} shell input tap {x} {y}"
-    out, err = run_command(cmd, cli=thiscli(ser), x=x, y=y)
+    out, err = run_capture(cmd, cli=thiscli(ser), x=x, y=y)
     if err:
         print("ERROR (tap): {!r}".format(err))
 
@@ -112,12 +117,12 @@ def keycode(ser, evt):
         print("ERROR (keycode): No support for {}".format(evt))
 
     key = cmds.get(evt)
-    run_command("{cli} shell input keyevent {key}", cli=thiscli(ser), key=key)
+    run_capture("{cli} shell input keyevent {key}", cli=thiscli(ser), key=key)
 
 
 def is_screen_on(ser):
     cmd = "{cli} shell dumpsys input_method | grep 'mInteractive' | sed 's/.*mInteractive=//g'"
-    out, err = run_command(cmd, cli=thiscli(ser))
+    out, err = run_capture(cmd, cli=thiscli(ser))
     if err:
         print("ERROR (is_screen_on): {!r}".format(err))
     out = out.strip()
@@ -187,7 +192,7 @@ def do_privacy_check(ser, command, context):
             "<em>account email address</em> at the top."
         )
     elif command == "backup":  # 2. Backup & reset
-        open_activity(ser, "com.android.settings/.Settings\$PrivacySettingsActivity")
+        open_activity(ser, r"com.android.settings/.Settings\$PrivacySettingsActivity")
         # wait(2)
         # keycode(ser, 'home')
         # take_screenshot(ser, 'account.png')
@@ -216,7 +221,7 @@ def do_privacy_check(ser, command, context):
         )
     elif command == "sync":
         if not open_activity(
-            ser, "com.android.settings/.Settings\$AccountsGroupSettingsActivity"
+            ser, r"com.android.settings/.Settings\$AccountsGroupSettingsActivity"
         ):
             return (
                 "I could not find syncing functionality in your Android. This most likely mean this is not available, "
@@ -241,4 +246,4 @@ if __name__ == "__main__":
     # print(get_screen_res(ser)
     # print(is_screen_on(ser))
     # do_privacy_check(ser, 'account')
-    take_screenshot(ser="")
+    take_screenshot(ser=None)

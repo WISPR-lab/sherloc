@@ -702,14 +702,14 @@ def evidence_printout():
 
     return send_from_directory(workingdir, filename)
 
-@app.route("/evidence/delete-data", methods=["GET"])
+@app.route("/evidence/delete-data", methods=["POST"])
 def evidence_delete_data():
 
     delete_client_data()
     flash("Client data deleted successfully.", "success")
     return redirect(url_for('evidence_home'))
 
-@app.route("/evidence/delete/account/<int:id>", methods=["GET"])
+@app.route("/evidence/delete/account/<int:id>", methods=["POST"])
 def evidence_delete_account(id):
 
     accounts = load_object_from_json(ConsultDataTypes.ACCOUNTS.value)
@@ -726,7 +726,7 @@ def evidence_delete_account(id):
     return redirect(url_for('evidence_home'))
 
 
-@app.route("/evidence/delete/scan/<string:ser>", methods=["GET"])
+@app.route("/evidence/delete/scan/<string:ser>", methods=["POST"])
 def evidence_delete_scan(ser):
 
     all_scan_data = load_object_from_json(ConsultDataTypes.SCANS.value)

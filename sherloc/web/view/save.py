@@ -35,7 +35,7 @@ def record_scanres(scanid):
     )
 
 
-@app.route("/delete/app/<scanid>", methods=["POST", "GET"])
+@app.route("/delete/app/<scanid>", methods=["POST"])
 def delete_app(scanid):
     appid = request.form.get("appid")
     try:

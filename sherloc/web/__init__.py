@@ -6,6 +6,7 @@ import config
 from flask import Flask, g, session, request
 from flask_sqlalchemy import model, SQLAlchemy
 from flask_migrate import Migrate
+from htmlclean import clean_description
 from web.security import register_request_guards
 
 app = Flask(__name__, static_folder="../webstatic", template_folder="../templates/")
@@ -20,6 +21,7 @@ sa = SQLAlchemy(app)
 Migrate(app, sa)
 
 register_request_guards(app)
+app.jinja_env.filters["clean_html"] = clean_description
 
 logger = logging.getLogger(__name__)
 

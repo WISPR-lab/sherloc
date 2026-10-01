@@ -1843,19 +1843,19 @@ def delete_client_data():
     # Delete phone dumps
     print("Deleting phone dumps...")
     print(DUMP_DIR)
-    shutil.rmtree(DUMP_DIR)
+    shutil.rmtree(DUMP_DIR, ignore_errors=True)
     os.makedirs(DUMP_DIR, exist_ok=True)
 
     # Delete screenshots
     print("Deleting screenshots...")
     print(SCREENSHOT_DIR)
-    shutil.rmtree(SCREENSHOT_DIR)
+    shutil.rmtree(SCREENSHOT_DIR, ignore_errors=True)
     os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
     # Delete report
     print("Deleting report...")
     print(REPORT_DIR)
-    shutil.rmtree(REPORT_DIR)
+    shutil.rmtree(REPORT_DIR, ignore_errors=True)
     os.makedirs(REPORT_DIR, exist_ok=True)
 
     # Delete everything stored in the database

@@ -15,12 +15,14 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 ### Changed
+- Importing `config` no longer creates key files or folders. The keys are created on first use and the reports folder when the app starts. Scripts and tests that only read a setting no longer write into `static_data`
 - Sherloc listens on 127.0.0.1 by default. Set `SHERLOC_HOST` and `SHERLOC_ALLOWED_HOSTS` to serve it elsewhere
 - `pytest` runs from the repository root
 - CI runs the test suite on pushes and pull requests. A lint ratchet (`tests/test_lint_ratchet.py`) fails on any new undefined name, invalid escape, mutable default argument, bare `except`, `shell=True` or `eval`; existing findings are recorded in `tests/lint_baseline.json`
 - The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
 - super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
 ### Fixed
+- "Delete client data" stopped at the first missing folder (for example before any scan) and never reached the database. Each folder is now handled independently
 - `python main.py test` did nothing: the call to `set_test_mode` discarded its result, and by then the paths had already been read. The `test` argument is now applied before `config` is imported
 - A missing blocklist file made the app exit with status 0 and a one-line message. It now exits with an error
 - 30 function arguments defaulted to a shared `list()`/`dict()`; each call now gets its own. Invalid escape sequences in 15 string literals are now raw strings (same values). A bare `except` in `/scan` is now `except ValueError`

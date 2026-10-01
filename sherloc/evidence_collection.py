@@ -1402,20 +1402,20 @@ class HomepageNoteForm(FlaskForm):
     submit = SubmitField("Save Notes")
     generate_printout = SubmitField("Generate Evidentiary Document")
 
-def create_printout(context):
-    out_file = os.path.join('reports', 'test_report.pdf')
-    template = os.path.join('templates', 'printout.html')
-    css_path = os.path.join('webstatic', 'style.css')
-
+def render_printout_html(context):
+    """Render the printout template to an HTML string."""
     template_loader = jinja2.FileSystemLoader("./")
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template(template)
-    html_string = template.render(context)
+    # Notes, nicknames and app names are free text and wkhtmltopdf renders the
+    # result, so everything is HTML-escaped.
+    template_env = jinja2.Environment(loader=template_loader, autoescape=True)
+    template = template_env.get_template(os.path.join('templates', 'printout.html'))
+    return template.render(context)
 
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
-    options = {
-        'enable-local-file-access': True,
+def printout_pdf_options():
+    # No 'enable-local-file-access': the page is built from user-entered text, and
+    # images are fetched from the running app over http (see url_root).
+    return {
         'margin-top': '15mm',
         'margin-bottom': '20mm',
         'margin-left': '10mm',
@@ -1426,12 +1426,19 @@ def create_printout(context):
         'footer-font-size': '8',
     }
 
-    pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+
+def create_printout(context, out_file=None):
+    out_file = out_file or os.path.join('reports', 'test_report.pdf')
+    css_path = os.path.join('webstatic', 'style.css')
+
+    html_string = render_printout_html(context)
+
+    wkhtmltopdf = shutil.which('wkhtmltopdf') or '/usr/local/bin/wkhtmltopdf'
+    config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf)
+
+    pdfkit.from_string(html_string, out_file, options=printout_pdf_options(), configuration=config, css=css_path, verbose=True)
 
     print("Printout created. Filename is", out_file)
-
-    # Also try one of the screenshots
-    #pdfkit.from_file("/Users/Soph/research/evidence-project/ips-evidence-collector/webstatic/images/screenshots/HSN_1db594fa7f4b6f487b0f650a92209e0e43b077390bd7ff4f4b41c57b888d78d1/com.google.android.apps.pixelmigrate/27-06-2025_09-59-39.png", "reports/screenshot.pdf", options=options, configuration=config, css=css_path, verbose=True)
 
     return out_file
 

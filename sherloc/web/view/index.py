@@ -1,7 +1,6 @@
-import config
-from flask import redirect, render_template, request, session, url_for
+from flask import redirect, request, session, url_for
 from phone_scanner import AndroidScan, IosScan, TestScan
-from phone_scanner.db import get_client_devices_from_db, new_client_id
+from phone_scanner.db import new_client_id
 from web import app
 
 # FIXME: why are we scanning devices before people clicked on scan now?
@@ -32,18 +31,3 @@ def index():
         session["clientid"] = new_client_id()
     
     return redirect(url_for('evidence_home'))
-
-    return render_template(
-        "main.html",
-        title=config.TITLE,
-        device_primary_user=config.DEVICE_PRIMARY_USER,
-        task="home",
-        devices={
-            "Android": android.devices(),
-            "iOS": ios.devices(),
-            "Test": test.devices(),
-        },
-        apps={},
-        clientid=session["clientid"],
-        currently_scanned=get_client_devices_from_db(session["clientid"]),
-    )

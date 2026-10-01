@@ -129,13 +129,6 @@ def update_appinfo(scanid, appid, remark, action):
     )
 
 
-def update_app_deleteinfo(scanid, appid, remark):
-    return insert(
-        "update app_info set " "remark=? here scanid=? and appid=?",
-        args=(remark, action, scanid, appid),
-    )
-
-
 def update_mul_appinfo(args):
     return insert_many(
         "update app_info set " "remark=? where scanid=? and appid=?", args

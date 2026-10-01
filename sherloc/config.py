@@ -155,29 +155,45 @@ APPROVED_INSTALLERS = {"com.android.vending",
 REPORT_PATH = THIS_DIR / "reports"
 PII_KEY_PATH = STATIC_DATA / "pii.key"
 
+# SHA-256 of key files that were committed to the public repository before
+# they were untracked. Anyone can read those values, so a key file that still
+# holds one of them is replaced. Only hashes are kept here.
+KNOWN_PUBLIC_KEY_SHA256 = {
+    "d6ad5dae593a9e058698c0ffc2f4da9c865d1a0e1ed09c9246dd446eb1304e86",  # pii.key
+    "eb7e855e3840deca9c4a9882e8a124e44c098f82a670aec10c0b7ea23ad4c6ea",  # flask.secret
+}
+
 
 def open_or_create_random_key(fpath, keylen=32):
     """
-    Opens the file at the given path or creates a new file with a random key of the specified length.
+    Returns the key stored at `fpath`, creating it first if needed.
+
+    The key is replaced when the file is missing, has the wrong length, or holds
+    a value that was once committed to the public repository. New files are
+    readable by the owner only.
 
     Args:
-        fpath (str): The path to the file.
+        fpath (str or Path): The path to the file.
         keylen (int, optional): The length of the random key. Defaults to 32.
 
     Returns:
-        bytes: The contents of the file as bytes.
+        bytes: The key.
     """
+    fpath = Path(fpath)
 
-    def create():
-        with fpath.open("wb") as f:
-            f.write(secrets.token_bytes(keylen))
+    if fpath.exists():
+        key = fpath.read_bytes()
+        if (
+            len(key) == keylen
+            and hashlib.sha256(key).hexdigest() not in KNOWN_PUBLIC_KEY_SHA256
+        ):
+            return key
 
-    if not fpath.exists():
-        create()
-    k = fpath.open("rb").read(keylen)
-    if len(k) != keylen:
-        create()
-    return fpath.open("rb").read()
+    key = secrets.token_bytes(keylen)
+    fd = os.open(fpath, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "wb") as f:
+        f.write(key)
+    return key
 
 
 PII_KEY = open_or_create_random_key(PII_KEY_PATH, keylen=32)

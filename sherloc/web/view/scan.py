@@ -47,7 +47,7 @@ def scan():
     if t_from_dump:
         try:
             from_dump = int(t_from_dump)
-        except:
+        except ValueError:
             from_dump = False
 
     currently_scanned = get_client_devices_from_db(session["clientid"])

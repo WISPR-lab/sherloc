@@ -21,6 +21,8 @@ Security in case of vulnerabilities.
 - The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
 - super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
 ### Security
+- Deleting client data now also empties the database (client notes, scans and app remarks). Before, only files were deleted and the notes stayed in `fieldstudy.db`. Deleted content is overwritten and the file is compacted
+- SQL statements are no longer echoed to the log (they included client notes and serials). Set `SHERLOC_SQL_ECHO=1` to turn echo back on for debugging
 - Device serials and app ids are validated before they reach a shell command. Previously a crafted serial or app id, or a serial reported by a device, could run commands
 - Fixed quoting in the Android and iOS uninstall commands that made `shlex.quote` ineffective
 - Screenshot paths are limited to the screenshots directory

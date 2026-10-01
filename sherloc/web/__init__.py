@@ -57,7 +57,9 @@ def after_request(response):
             request.remote_addr,
             request.method,
             request.scheme,
-            request.full_path,
+            # The route pattern, not the URL: paths and query strings carry
+            # device serials and app ids.
+            request.url_rule.rule if request.url_rule else "-",
             response.status,
         )
     return response

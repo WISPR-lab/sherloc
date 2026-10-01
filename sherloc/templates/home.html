@@ -7,7 +7,7 @@
             <a class='btn btn-normal' href="/form/edit" target="_blank" rel="noopener" data-toggle="tooltip" title="Edit previously submitted consult forms."><u>Edit previous consult forms</u></a>
             <a class='btn btn-normal' href="/privacy" target="_blank" rel="noopener" data-toggle="tooltip" title="Review the built-in sharing feature settings of your device with this."><u>Privacy Checkup</u></a>
             <a class='btn btn-normal' href="/evidence/1" target="_blank" rel="noopener" data-toggle="tooltip" title="Collect evidence here."><u>Evidence</u></a>
-            <a href="/kill" onclick="window.open('','_self').close();">&#x274C; Close App and End Session</a>
+            <form method="post" action="/kill" style="display:inline"><button type="submit" class="btn btn-link">&#x274C; Close App and End Session</button></form>
         </span>
     </h4>
     <!-- <form id="kill-server" method="POST" action="/kill" name="form-kill">
@@ -99,7 +99,7 @@
                             <td align="center" ><a class="h4" onclick="" href="javascript:;" data-toggle="tooltip"
                                                    title="System App! Cannot delete">&otimes;</a></td>
                             {%  else %}
-                            <td align="center"><a class="h4" onclick="delete_app('{{ appId }}', this)" href="javascript:;" data-toggle="tooltip"
+                            <td align="center"><a class="h4" onclick='delete_app({{ appId|tojson }}, this)' href="javascript:;" data-toggle="tooltip"
                                                   title="Delete app">&otimes;</a></td>
                             {% endif %}
                             {% if info['title'] %}

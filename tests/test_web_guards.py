@@ -114,10 +114,10 @@ def test_local_host_headers_are_accepted(client, host):
     assert r.status_code == 200
 
 
-def test_cross_site_get_cannot_delete_client_data(client, monkeypatch):
+def test_cross_site_post_cannot_delete_client_data(client, monkeypatch):
     deleted = []
     monkeypatch.setattr("web.view.evidence.delete_client_data", lambda: deleted.append(1))
-    r = client.get("/evidence/delete-data", headers={"Sec-Fetch-Site": "cross-site"})
+    r = client.post("/evidence/delete-data", headers={"Sec-Fetch-Site": "cross-site"})
     assert r.status_code == 403
     assert deleted == []
 
@@ -127,15 +127,15 @@ def test_same_site_other_port_cannot_delete_client_data(client, monkeypatch):
     # not same-origin, and must not be able to drive this app.
     deleted = []
     monkeypatch.setattr("web.view.evidence.delete_client_data", lambda: deleted.append(1))
-    r = client.get("/evidence/delete-data", headers={"Sec-Fetch-Site": "same-site"})
+    r = client.post("/evidence/delete-data", headers={"Sec-Fetch-Site": "same-site"})
     assert r.status_code == 403
     assert deleted == []
 
 
-def test_same_origin_get_can_still_delete_client_data(client, monkeypatch):
+def test_same_origin_post_can_still_delete_client_data(client, monkeypatch):
     deleted = []
     monkeypatch.setattr("web.view.evidence.delete_client_data", lambda: deleted.append(1))
-    r = client.get("/evidence/delete-data", headers={"Sec-Fetch-Site": "same-origin"})
+    r = client.post("/evidence/delete-data", headers={"Sec-Fetch-Site": "same-origin"})
     assert r.status_code in (302, 303)
     assert deleted == [1]
 
@@ -143,7 +143,7 @@ def test_same_origin_get_can_still_delete_client_data(client, monkeypatch):
 def test_request_without_fetch_metadata_still_works(client, monkeypatch):
     # Non-browser clients (curl, older browsers) send no Sec-Fetch-* headers.
     monkeypatch.setattr("web.view.evidence.delete_client_data", lambda: None)
-    r = client.get("/evidence/delete-data")
+    r = client.post("/evidence/delete-data")
     assert r.status_code in (302, 303)
 
 

@@ -21,8 +21,13 @@ Security in case of vulnerabilities.
 - The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
 - super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
 ### Fixed
+- "Close App and End Session" never worked: it relied on `werkzeug.server.shutdown`, which Werkzeug 2.1+ removed. It now stops the app after sending its response
 - `/view_results` raised a `NameError` for any existing scan. Removed unreachable or uncalled code that used undefined names (`index.py`, `android_permissions.py`, and `update_app_deleteinfo` in `db.py`, which also had an SQL typo). The lint check now fails on undefined names
 ### Security
+- Deleting client data, deleting a scan or account, and closing the app now require POST. A GET (an image tag, a link prefetch) could trigger them. The buttons are now forms
+- App descriptions from the app-store crawls are reduced to a few formatting tags before rendering. They were inserted unescaped, so a published app could run script in the consultant's browser
+- `/details/app` validates the app id and serial, and returns 404 for an unknown device
+- App ids are passed to the delete-app handler as JSON, not pasted into a JavaScript string
 - Deleting client data now also empties the database (client notes, scans and app remarks). Before, only files were deleted and the notes stayed in `fieldstudy.db`. Deleted content is overwritten and the file is compacted
 - SQL statements are no longer echoed to the log (they included client notes and serials). Set `SHERLOC_SQL_ECHO=1` to turn echo back on for debugging
 - Device serials and app ids are validated before they reach a shell command. Previously a crafted serial or app id, or a serial reported by a device, could run commands

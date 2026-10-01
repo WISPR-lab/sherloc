@@ -12,6 +12,22 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
+## [Unreleased]
+
+### Changed
+- Sherloc listens on 127.0.0.1 by default. Set `SHERLOC_HOST` and `SHERLOC_ALLOWED_HOSTS` to serve it elsewhere
+- `pytest` runs from the repository root
+- CI runs the test suite on pushes and pull requests. A lint ratchet (`tests/test_lint_ratchet.py`) fails on any new undefined name, invalid escape, mutable default argument, bare `except`, `shell=True` or `eval`; existing findings are recorded in `tests/lint_baseline.json`
+- The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
+- super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
+### Security
+- Device serials and app ids are validated before they reach a shell command. Previously a crafted serial or app id, or a serial reported by a device, could run commands
+- Fixed quoting in the Android and iOS uninstall commands that made `shlex.quote` ineffective
+- Screenshot paths are limited to the screenshots directory
+- Requests with a foreign `Host` header, a cross-origin `Origin` on state-changing methods, or a non-same-origin `Sec-Fetch-Site` are rejected, so another website cannot trigger scans, uninstalls, or data deletion
+- `sherloc/static_data/pii.key` and `flask.secret` are no longer tracked by git and are ignored. Both files were public, so anyone could compute the `HSN_` device identifiers and forge session cookies. Keys are generated on first run with owner-only (0600) permissions, and a key file that still holds one of the previously published values is replaced. Existing installs get new keys after pulling, so stored `HSN_` identifiers will change. The old values remain in git history
+- The PDF printout escapes notes, names and app text, and wkhtmltopdf no longer has local file access. Previously a note containing an `<iframe src="file://...">` tag put the contents of a local file into the report
+
 ## [v1.1.4] - November 4, 2025
 
 ### Added     

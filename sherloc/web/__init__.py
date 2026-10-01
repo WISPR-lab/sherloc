@@ -5,6 +5,7 @@ import config
 from flask import Flask, g, session, request
 from flask_sqlalchemy import model, SQLAlchemy
 from flask_migrate import Migrate
+from web.security import register_request_guards
 
 app = Flask(__name__, static_folder="../webstatic", template_folder="../templates/")
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQL_DB_PATH
@@ -15,6 +16,8 @@ app.config["SECRET_KEY"] = config.FLASK_SECRET  # doesn't seem to be necessary
 app.config["SESSION_TYPE"] = "filesystem"
 sa = SQLAlchemy(app)
 Migrate(app, sa)
+
+register_request_guards(app)
 
 logger = logging.getLogger(__name__)
 

@@ -21,9 +21,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
       with:
         python-version: "3.10"
     - name: Install dependencies
@@ -32,7 +32,7 @@ jobs:
         pip install -r sherloc/requirements.txt
     # checkout a submodule
     - name: Checkout AssoEchap/stalkerware-indicators
-      uses: actions/checkout@v3
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       with:
         repository: AssoEchap/stalkerware-indicators
         path: './sherloc/stalkerware-indicators'
@@ -44,7 +44,7 @@ jobs:
     - name: Create Pull Request
       id: cpr
       if: github.event_name != 'pull_request'
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@4e1beaa7521e8b457b572c090b25bd3db56bf1c5  # v5
       with:
         add-paths: |
           sherloc/static_data/app-flags.csv

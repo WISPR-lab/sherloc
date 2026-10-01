@@ -41,6 +41,7 @@ from subprocess import PIPE, Popen, TimeoutExpired
 from flask import url_for
 
 import config
+from inputcheck import validate_serial
 
 adb = config.ADB_PATH
 
@@ -62,10 +63,10 @@ def run_command(cmd, **kwargs):
 
 
 def thiscli(ser):
-    if ser:
-        return "{adb} -s {ser}".format(adb=adb, ser=ser)
-    else:
+    """Return the adb command prefix. `None` means the default device."""
+    if ser is None:
         return "{adb}".format(adb=adb)
+    return "{adb} -s {ser}".format(adb=adb, ser=shlex.quote(validate_serial(ser)))
 
 
 def get_screen_res(ser):
@@ -241,4 +242,4 @@ if __name__ == "__main__":
     # print(get_screen_res(ser)
     # print(is_screen_on(ser))
     # do_privacy_check(ser, 'account')
-    take_screenshot(ser="")
+    take_screenshot(ser=None)

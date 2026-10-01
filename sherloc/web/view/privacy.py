@@ -14,6 +14,7 @@ from datetime import datetime
 from flask import render_template, request, url_for
 
 import config
+from inputcheck import validate_path_part, validate_serial
 
 #from phone_scanner import iosScreenshot
 from phone_scanner.privacy_scan_android import do_privacy_check, take_screenshot
@@ -37,6 +38,11 @@ def privacy():
 
 @app.route("/privacy/<device>/<cmd>/<context>/<ser>", methods=["GET"])
 def privacy_scan(device, cmd, context, ser):
+    try:
+        validate_serial(ser)
+        validate_path_part(context.replace(" ", ""), "screenshot context")
+    except ValueError:
+        return "Invalid request.", 400
     print(ser)
     if device == "ios":
         res = iosScreenshot(ser, context, nocache=True)

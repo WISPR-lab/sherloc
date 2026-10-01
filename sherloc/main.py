@@ -10,7 +10,7 @@ from phone_scanner import db
 from web import app, sa
 
 PORT = 6200 if not (config.TEST or config.DEBUG) else 6202
-HOST = "127.0.0.1" if config.DEBUG else "0.0.0.0"
+HOST = config.HOST
 
 def open_browser():
     """Opens a browser to make it easy to navigate to ISDi

@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from sys import platform
 
+from inputcheck import validate_path_part
+
 SHERLOC_VERSION = "1.1.4"
 
 def setup_logger():
@@ -45,6 +47,16 @@ spyware_list_file = "static_data/spyware.csv"  # hand picked
 # ---------------------------------------------------------
 DEBUG = bool(int(os.getenv("DEBUG", "0")))
 TEST = bool(int(os.getenv("TEST", "0")))
+
+# The app handles sensitive evidence and has no login, so it listens on the
+# loopback interface only. Set SHERLOC_HOST to change that, and list the host
+# names clients will use in SHERLOC_ALLOWED_HOSTS (comma separated).
+HOST = os.getenv("SHERLOC_HOST", "127.0.0.1")
+ALLOWED_HOSTS = {"localhost", "127.0.0.1", "::1"} | {
+    h.strip().lower()
+    for h in os.getenv("SHERLOC_ALLOWED_HOSTS", "").split(",")
+    if h.strip()
+}
 
 DEVICE_PRIMARY_USER = {
     "me": "Me",
@@ -203,9 +215,18 @@ def error():
     return e.replace("\n", "<br/>")
 
 def create_screenshot_fname(context, serial="misc"):
-    # Verify the directory exists and create it if not
-    subfolder = context.replace(" ", "")
-    dir_path = os.path.join(THIS_DIR, "webstatic", "images", "screenshots", serial, subfolder)
+    """Return a new screenshot path, creating its directory.
+
+    `context` and `serial` can come from a URL, so each must be a single safe
+    path component and the result must stay inside the screenshots directory.
+    """
+    subfolder = validate_path_part(context.replace(" ", ""), "screenshot context")
+    serial = validate_path_part(serial, "serial")
+
+    root = os.path.realpath(os.path.join(THIS_DIR, "webstatic", "images", "screenshots"))
+    dir_path = os.path.realpath(os.path.join(root, serial, subfolder))
+    if os.path.commonpath([root, dir_path]) != root:
+        raise ValueError("Invalid screenshot location.")
     os.makedirs(dir_path, exist_ok=True)
 
     # Create a filename with the current time and context

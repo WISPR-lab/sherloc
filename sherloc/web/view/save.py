@@ -1,5 +1,6 @@
 from flask import request, session
 import config
+from inputcheck import validate_appid
 from web import app
 from phone_scanner.db import (
     get_serial_from_db,
@@ -36,10 +37,14 @@ def record_scanres(scanid):
 
 @app.route("/delete/app/<scanid>", methods=["POST", "GET"])
 def delete_app(scanid):
+    appid = request.form.get("appid")
+    try:
+        validate_appid(appid)
+    except ValueError:
+        return "Invalid app id.", 400
     device = get_device_from_db(scanid)
     serial = get_serial_from_db(scanid)
     sc = get_device(device)
-    appid = request.form.get("appid")
     remark = request.form.get("remark")
     action = "delete"
     # TODO: Record the uninstall and note

@@ -16,6 +16,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 sa = SQLAlchemy(app)
 Migrate(app, sa)
 
+from web.security import register_request_guards
+
+register_request_guards(app)
+
 logger = logging.getLogger(__name__)
 
 import web.view

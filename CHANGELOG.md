@@ -12,6 +12,17 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
+## [Unreleased]
+
+### Changed
+- Sherloc listens on 127.0.0.1 by default. Set `SHERLOC_HOST` and `SHERLOC_ALLOWED_HOSTS` to serve it elsewhere
+- `pytest` runs from the repository root
+### Security
+- Device serials and app ids are validated before they reach a shell command. Previously a crafted serial or app id, or a serial reported by a device, could run commands
+- Fixed quoting in the Android and iOS uninstall commands that made `shlex.quote` ineffective
+- Screenshot paths are limited to the screenshots directory
+- Requests with a foreign `Host` header, a cross-origin `Origin` on state-changing methods, or a non-same-origin `Sec-Fetch-Site` are rejected, so another website cannot trigger scans, uninstalls, or data deletion
+
 ## [v1.1.4] - November 4, 2025
 
 ### Added     

@@ -102,3 +102,12 @@ def test_missing_database_is_not_an_error(tmp_path, monkeypatch):
 def test_sql_statements_are_not_echoed_to_logs():
     # Echoed statements include client notes and device serials.
     assert web.app.config["SQLALCHEMY_ECHO"] is False
+
+
+def test_database_is_wiped_even_if_a_folder_is_missing(populated, tmp_path, monkeypatch):
+    # A crash while removing files must not leave the database untouched.
+    monkeypatch.setattr(ec, "DUMP_DIR", tmp_path / "never-created")
+    monkeypatch.setattr(ec, "REPORT_DIR", tmp_path / "also-missing")
+    ec.delete_client_data()
+    assert _rows(populated, "clients_notes") == 0
+    assert (tmp_path / "never-created").is_dir()  # recreated, as for the others

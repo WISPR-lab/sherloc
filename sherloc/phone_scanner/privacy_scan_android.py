@@ -45,7 +45,11 @@ from inputcheck import validate_serial
 
 adb = config.ADB_PATH
 
-def run_command(cmd, **kwargs):
+def run_capture(cmd, **kwargs):
+    """Run a command and return (stdout, stderr) as text.
+
+    Not the same as `runcmd.run_command`, which returns the process.
+    """
     _cmd = cmd.format(**kwargs)
     print(_cmd)
     try:
@@ -71,7 +75,7 @@ def thiscli(ser):
 
 def get_screen_res(ser):
     cmd = "{cli} shell dumpsys window | grep 'mUnrestrictedScreen'"
-    out, err = run_command(cmd, cli=thiscli(ser))
+    out, err = run_capture(cmd, cli=thiscli(ser))
     m = re.match(r"mUnrestrictedScreen=\(0,0\) (?P<w>\d+)x(?P<h>\d+)", out.strip())
     if m:
         return int(m.group("w")), int(m.group("h"))
@@ -84,7 +88,7 @@ def open_activity(ser, activity_name):
     Opens an activity
     """
     cmd = "{cli} shell am start '{act}'"
-    out, err = run_command(cmd, cli=thiscli(ser), act=activity_name)
+    out, err = run_capture(cmd, cli=thiscli(ser), act=activity_name)
     if err:
         print("ERROR (open_activity): {!r}".format(err))
         return False
@@ -102,7 +106,7 @@ def tap(ser, xpercent, ypercent):
     x = int(xpercent * w / 100)
     y = int(ypercent * h / 100)
     cmd = "{cli} shell input tap {x} {y}"
-    out, err = run_command(cmd, cli=thiscli(ser), x=x, y=y)
+    out, err = run_capture(cmd, cli=thiscli(ser), x=x, y=y)
     if err:
         print("ERROR (tap): {!r}".format(err))
 
@@ -113,12 +117,12 @@ def keycode(ser, evt):
         print("ERROR (keycode): No support for {}".format(evt))
 
     key = cmds.get(evt)
-    run_command("{cli} shell input keyevent {key}", cli=thiscli(ser), key=key)
+    run_capture("{cli} shell input keyevent {key}", cli=thiscli(ser), key=key)
 
 
 def is_screen_on(ser):
     cmd = "{cli} shell dumpsys input_method | grep 'mInteractive' | sed 's/.*mInteractive=//g'"
-    out, err = run_command(cmd, cli=thiscli(ser))
+    out, err = run_capture(cmd, cli=thiscli(ser))
     if err:
         print("ERROR (is_screen_on): {!r}".format(err))
     out = out.strip()

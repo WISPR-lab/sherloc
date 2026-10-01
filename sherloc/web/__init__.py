@@ -9,6 +9,8 @@ from flask_migrate import Migrate
 from htmlclean import clean_description
 from web.security import register_request_guards
 
+config.ensure_dirs()
+
 app = Flask(__name__, static_folder="../webstatic", template_folder="../templates/")
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQL_DB_PATH
 # Echoed statements include client notes and device serials.

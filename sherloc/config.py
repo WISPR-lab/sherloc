@@ -196,13 +196,29 @@ def open_or_create_random_key(fpath, keylen=32):
     return key
 
 
-PII_KEY = open_or_create_random_key(PII_KEY_PATH, keylen=32)
-
 FLASK_SECRET_PATH = STATIC_DATA / "flask.secret"
-FLASK_SECRET = open_or_create_random_key(FLASK_SECRET_PATH)
 
-if not REPORT_PATH.exists():
-    os.mkdir(REPORT_PATH)
+# Keys are created on first use, not when this module is imported, so scripts
+# and tests that only read a setting do not write key files.
+_LAZY_KEYS = {
+    "PII_KEY": lambda: open_or_create_random_key(PII_KEY_PATH, keylen=32),
+    "FLASK_SECRET": lambda: open_or_create_random_key(FLASK_SECRET_PATH),
+}
+_key_cache = {}
+
+
+def __getattr__(name):
+    """Module attribute hook (PEP 562): PII_KEY and FLASK_SECRET."""
+    if name in _LAZY_KEYS:
+        if name not in _key_cache:
+            _key_cache[name] = _LAZY_KEYS[name]()
+        return _key_cache[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def ensure_dirs():
+    """Create the folders the app writes to. Called when the app starts."""
+    REPORT_PATH.mkdir(exist_ok=True)
 
 
 def hmac_serial(ser: str) -> str:
@@ -210,7 +226,7 @@ def hmac_serial(ser: str) -> str:
     it returns the same value."""
     if ser.startswith("HSN_"):
         return ser
-    hser = hmac.new(PII_KEY, ser.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
+    hser = hmac.new(__getattr__("PII_KEY"), ser.encode("utf8"), digestmod=hashlib.sha256).hexdigest()
     return f"HSN_{hser}"
 
 

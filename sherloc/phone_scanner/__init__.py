@@ -428,11 +428,14 @@ class AndroidScan(AppScan):
 
     def uninstall(self, serial, appid):
         validate_appid(appid)
+        validate_serial(serial)
         # `{appid!r}` here would wrap the quoted value in double quotes, which
         # re-enables $(...) expansion. Use the shlex-quoted value as is.
-        cmd = "{cli} uninstall {appid}"
+        # `-s` targets the device that was scanned; without it adb refuses to
+        # run when more than one device is attached.
+        cmd = "{cli} -s {serial} uninstall {appid}"
         s = catch_err(
-            run_command(cmd, appid=shlex.quote(appid)),
+            run_command(cmd, serial=shlex.quote(serial), appid=shlex.quote(appid)),
             cmd=cmd,
             msg="Could not uninstall",
         )
@@ -683,9 +686,14 @@ class IosScan(AppScan):
         # cmd = '{cli} -i {serial} --uninstall_only --bundle_id {appid!r}'
         # cmd = 'ideviceinstaller --udid {} --uninstall {appid!r}'.format(serial, appid)
         validate_appid(appid)
+        validate_serial(serial)
         # The command is built here and not formatted again, so no braces in
-        # the template can be interpreted by run_command.
-        cmd = f"{self.cli}ideviceinstaller --uninstall {shlex.quote(appid)}"
+        # the template can be interpreted by run_command. `--udid` targets
+        # the device that was scanned.
+        cmd = (
+            f"{self.cli}ideviceinstaller --udid {shlex.quote(serial)} "
+            f"--uninstall {shlex.quote(appid)}"
+        )
         s = catch_err(run_command(cmd), cmd=cmd, msg="Could not uninstall")
         return s != -1
 

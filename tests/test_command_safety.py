@@ -124,7 +124,40 @@ def test_ios_uninstall_rejects_hostile_appid(shell, appid):
 
 def test_android_uninstall_passes_appid_as_one_argument(shell):
     AndroidScan().uninstall(serial="ZY224F8TKG", appid="com.example.app")
-    assert shell == [["ARG:uninstall", "ARG:com.example.app"]]
+    assert shell[0][-2:] == ["ARG:uninstall", "ARG:com.example.app"]
+
+
+def test_android_uninstall_targets_the_given_device(shell):
+    AndroidScan().uninstall(serial="192.168.1.5:5555", appid="com.example.app")
+    assert shell == [
+        ["ARG:-s", "ARG:192.168.1.5:5555", "ARG:uninstall", "ARG:com.example.app"]
+    ]
+
+
+@pytest.mark.parametrize("serial", HOSTILE)
+def test_android_uninstall_rejects_hostile_serial(shell, serial):
+    with pytest.raises(ValueError):
+        AndroidScan().uninstall(serial=serial, appid="com.example.app")
+    assert shell == []
+
+
+def test_ios_uninstall_targets_the_given_device(monkeypatch):
+    seen = []
+    monkeypatch.setattr("phone_scanner.run_command", lambda cmd, **kw: seen.append(cmd))
+    monkeypatch.setattr("phone_scanner.catch_err", lambda p, *a, **k: "")
+    IosScan().uninstall(serial="00008030-001234567890802E", appid="com.example.app")
+    assert len(seen) == 1
+    assert "--udid 00008030-001234567890802E" in seen[0]
+    assert seen[0].rstrip().endswith("--uninstall com.example.app")
+
+
+@pytest.mark.parametrize("serial", HOSTILE)
+def test_ios_uninstall_rejects_hostile_serial(monkeypatch, serial):
+    seen = []
+    monkeypatch.setattr("phone_scanner.run_command", lambda cmd, **kw: seen.append(cmd))
+    with pytest.raises(ValueError):
+        IosScan().uninstall(serial=serial, appid="com.example.app")
+    assert seen == []
 
 
 @pytest.mark.parametrize("serial", HOSTILE)

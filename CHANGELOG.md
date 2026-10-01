@@ -21,6 +21,8 @@ Security in case of vulnerabilities.
 - The stalkerware-indicators workflow uses the `sherloc/` paths and a single `token:` key (the duplicate key meant `IOC_UPDATE_KEY` was ignored), and its script exits non-zero when its requirements are missing. It no longer tries to open a PR on pull request runs
 - super-linter checks changed files for serious Python problems and executable bits only; style linters were failing on the existing code
 ### Fixed
+- Android and iOS uninstall now target the scanned device (`adb -s`, `ideviceinstaller --udid`). Before, adb refused to run with more than one device attached. `delete_app` only accepts a serial that matches the scan
+- iOS screenshots no longer break when the install path contains a space, and the `pymobiledevice3` tunnel process is stopped after each screenshot instead of being left running
 - "Close App and End Session" never worked: it relied on `werkzeug.server.shutdown`, which Werkzeug 2.1+ removed. It now stops the app after sending its response
 - `/view_results` raised a `NameError` for any existing scan. Removed unreachable or uncalled code that used undefined names (`index.py`, `android_permissions.py`, and `update_app_deleteinfo` in `db.py`, which also had an SQL typo). The lint check now fails on undefined names
 ### Security

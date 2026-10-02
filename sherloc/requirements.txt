@@ -9,3 +9,4 @@ pymobiledevice3==4.21.0
 PyYAML==6.0.2
 rsonlite==0.1.0
 WTForms-Alchemy==0.19.0
+isdi-scanner==1.0.9

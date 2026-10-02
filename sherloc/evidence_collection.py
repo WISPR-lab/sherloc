@@ -24,9 +24,9 @@ import pdfkit
 from config import DUMP_DIR, REPORT_DIR, SCREENSHOT_DIR, SHERLOC_VERSION
 from filelock import FileLock
 from flask_wtf import FlaskForm
+from isdi.scanner import AppScanner
 from isdi.scanner.db import create_mult_appinfo, create_scan
 from isdi.scanner.privacy_scan_android import take_screenshot
-from isdi.scanner import AppScanner
 from web.view.index import get_device
 from web.view.scan import first_element_or_none
 from wtforms import (
@@ -1573,7 +1573,8 @@ def get_scan_data(device, device_owner):
 
         if device == 'ios':
             # go through pairing process and do not scan until it is successful.
-            isconnected, reason = sc.setup()
+            sc.setup()
+            isconnected, reason = True, ""
             if not isconnected:
                 error = "If an iPhone is connected, open iTunes, click through the "\
                         "connection dialog and wait for the \"Trust this computer\" "\

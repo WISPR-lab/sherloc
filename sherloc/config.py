@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from sys import platform
 
-SHERLOC_VERSION = "1.1.4"
+SHERLOC_VERSION ="1.2.0"
 
 def setup_logger():
     """

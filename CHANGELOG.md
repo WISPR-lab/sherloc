@@ -12,6 +12,17 @@ Removed for now removed features.
 Fixed for any bug fixes.
 Security in case of vulnerabilities.
 
+
+## [v1.2.0] - October 2, 2026
+
+### Added     
+### Changed
+- Remove duplicated code from ISDi repository, instead downloading ISDi as a dependency.
+### Deprecated
+### Removed
+### Fixed
+### Security
+
 ## [v1.1.4] - November 4, 2025
 
 ### Added     

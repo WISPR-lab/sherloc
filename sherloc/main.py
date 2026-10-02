@@ -6,7 +6,7 @@ import webbrowser
 from threading import Timer
 
 import config
-from phone_scanner import db
+from isdi.scanner import db
 from web import app, sa
 
 PORT = 6200 if not (config.TEST or config.DEBUG) else 6202

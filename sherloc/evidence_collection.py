@@ -24,8 +24,9 @@ import pdfkit
 from config import DUMP_DIR, REPORT_DIR, SCREENSHOT_DIR, SHERLOC_VERSION
 from filelock import FileLock
 from flask_wtf import FlaskForm
-from phone_scanner.db import create_mult_appinfo, create_scan
-from phone_scanner.privacy_scan_android import take_screenshot
+from isdi.scanner import AppScanner
+from isdi.scanner.db import create_mult_appinfo, create_scan
+from isdi.scanner.privacy_scan_android import take_screenshot
 from web.view.index import get_device
 from web.view.scan import first_element_or_none
 from wtforms import (
@@ -1411,8 +1412,10 @@ def create_printout(context):
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template(template)
     html_string = template.render(context)
+    with open("reports/test_report.html", "w") as f:
+        f.write(html_string)
 
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    # config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
     options = {
         'enable-local-file-access': True,
@@ -1426,7 +1429,7 @@ def create_printout(context):
         'footer-font-size': '8',
     }
 
-    pdfkit.from_string(html_string, out_file, options=options, configuration=config, css=css_path, verbose=True)
+    pdfkit.from_string(html_string, out_file, options=options, css=css_path, verbose=True)
 
     print("Printout created. Filename is", out_file)
 
@@ -1456,6 +1459,8 @@ def screenshot(device, fname):
     fname = os.path.join(SCREENSHOT_FOLDER, fname)
 
     sc = get_device(device)
+    if not sc:
+        raise Exception("Please choose one device to scan.")
     ser = sc.devices()
 
     if device.lower() == "android":
@@ -1495,10 +1500,14 @@ def account_is_concerning(account):
 
     return login_concern or pwd_concern or recovery_concern or twofactor_concern or security_concern
 
-def get_multiple_app_details(device, ser, apps):
+def get_multiple_app_details(device: str, ser: str, apps: list[dict]):
     filled_in_apps = []
+    sc = get_device(device)
+    if sc is None:
+        raise Exception("Please choose one device to scan.")
+    details = sc.get_multiple_app_details(ser, [app["id"] for app in apps])
     for app in apps:
-        d = get_app_details(device, ser, app["id"])
+        d, info = details.get(app["id"], ({}, {}))
         d["flags"] = app["flags"]
         d["appId"] = app["id"]
         filled_in_apps.append(d)
@@ -1506,23 +1515,14 @@ def get_multiple_app_details(device, ser, apps):
 
 def get_app_details(device, ser, appid):
     sc = get_device(device)
+    if sc is None:
+        raise Exception("Please choose one device to scan.")
     d, info = sc.app_details(ser, appid)
-
     # Copy some info over from the info dict
     # TODO: Just return this all in one clean dictionary from app_details()...
     info_things = ["install_time", "last_updated", "app_version"]
     for item in info_things:
-        try:
-            d[item] = info[item]
-            if d[item].strip() == "":
-                d[item] = ""
-        except KeyError:
-            d[item] = ""
-
-    #d = d.fillna('')
-    #d = d.to_dict(orient='index').get(0, {})
-    #d['appId'] = appid
-
+        d[item] = info.get(item, "")
     return d
 
 def get_scan_obj(device, nickname):
@@ -1534,7 +1534,7 @@ def get_scan_obj(device, nickname):
         raise Exception("Please give the device a nickname.")
     return sc
 
-def get_ser_from_scan_obj(sc):
+def get_ser_from_scan_obj(sc: AppScanner) -> str:
     """Get the serial number of the device, if it exists."""
     ser = sc.devices()
 
@@ -1544,7 +1544,7 @@ def get_ser_from_scan_obj(sc):
         # needed.
         raise Exception("A device wasn't detected.")
 
-    ser = first_element_or_none(ser)
+    ser = first_element_or_none(ser) or "NOT_FOUND"
     return ser
 
 def get_serial(device, nickname):
@@ -1573,7 +1573,8 @@ def get_scan_data(device, device_owner):
 
         if device == 'ios':
             # go through pairing process and do not scan until it is successful.
-            isconnected, reason = sc.setup()
+            sc.setup()
+            isconnected, reason = True, ""
             if not isconnected:
                 error = "If an iPhone is connected, open iTunes, click through the "\
                         "connection dialog and wait for the \"Trust this computer\" "\
@@ -1587,7 +1588,7 @@ def get_scan_data(device, device_owner):
 
         # Finds all the apps in the device
         # @apps have appid, title, flags, TODO: add icon
-        apps = sc.find_spyapps(serialno=ser).fillna('').to_dict(orient='index')
+        apps = sc.find_spyapps(serialno=ser)
         if len(apps) <= 0:
             print("The scanning failed for some reason.")
             error = "The scanning failed. This could be due to many reasons. Try"\
@@ -1620,7 +1621,7 @@ def get_scan_data(device, device_owner):
 
         rooted, rooted_reason = sc.isrooted(ser)
         scan_d['is_rooted'] = rooted
-        scan_d['rooted_reasons'] = rooted_reason
+        scan_d['rooted_reasons'] = json.dumps(rooted_reason)
 
         scanid = create_scan(scan_d)
 

@@ -1,7 +1,7 @@
 from web import app
 from web.view.index import get_device
 from flask import request, render_template, redirect, url_for
-from phone_scanner.db import (
+from isdi.scanner.db import (
     get_scan_res_from_db,
     get_app_info_from_db,
     first_element_or_none,
@@ -35,7 +35,7 @@ def view_results():
         clientid=session['clientid']
     )
     
-    apps = sc.find_spyapps(serialno=ser).fillna('').to_dict(orient='index')
+    apps = sc.find_spyapps(serialno=ser)
 
     
     template_d.update(dict(

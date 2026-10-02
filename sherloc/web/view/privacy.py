@@ -15,8 +15,8 @@ from flask import render_template, request, url_for
 
 import config
 
-#from phone_scanner import iosScreenshot
-from phone_scanner.privacy_scan_android import do_privacy_check, take_screenshot
+#from isdi.scanner import iosScreenshot
+from isdi.scanner.privacy_scan_android import do_privacy_check, take_screenshot
 from web import app
 from web.view.index import get_device
 
@@ -37,16 +37,16 @@ def privacy():
 
 @app.route("/privacy/<device>/<cmd>/<context>/<ser>", methods=["GET"])
 def privacy_scan(device, cmd, context, ser):
-    print(ser)
+    print(f"ser={ser}, context={context}, cmd={cmd}")
+    outf = config.create_screenshot_fname(context, ser)
     if device == "ios":
-        res = iosScreenshot(ser, context, nocache=True)
+        res = iosScreenshot(ser, outf, nocache=True)
     else:
-        res = do_privacy_check(ser, cmd, context)
-    print("Screenshot Taken")
+        res = do_privacy_check(ser, cmd, outf)
+    print(f"Screenshot Taken: {outf}")
     return res
 
-def iosScreenshot(ser, context, nocache = False):
-    fname = config.create_screenshot_fname(context, ser)
+def iosScreenshot(ser, fname, nocache = False):
     linkPro = subprocess.Popen(["pymobiledevice3", "lockdown", "start-tunnel"], stdout= subprocess.PIPE)
     time.sleep(2)
     output = linkPro.stdout

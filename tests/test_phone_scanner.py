@@ -1,4 +1,4 @@
-from phone_scanner import AndroidScan, IosScan
+from isdi.scanner import AndroidScanner as AndroidScan, IosScanner as IosScan
 
 """Fake Tests!!"""
 

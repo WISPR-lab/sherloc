@@ -1,5 +1,5 @@
 dataset==1.6.2
-filelock==3.17.0
+filelock==3.20.3
 Flask-Bootstrap==3.3.7.1
 Flask-Migrate==4.0.7
 Flask-WTF==1.2.2
